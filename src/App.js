@@ -1,25 +1,33 @@
 import logo from './logo.svg';
 import './App.css';
+import LmsAdminManagement from './pages/LmsAdminManagement';
+import Login from './pages/Login';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthProvider';
+import { RequireAuth } from './components/RequireAuth';
+import Appbar from './components/Appbar';
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+      <AuthProvider>
+
+    <Router>
+
+    <Appbar/>
+      <Routes>
+        <Route path = "/" element={<Login />} />
+
+        <Route path = "/LmsAdminManagement" element={<RequireAuth><LmsAdminManagement style={{marginTop : "1000px"}}/></RequireAuth>} />
+
+      </Routes>
+    </Router>
+    </AuthProvider>
+  </div>
+);
+
 }
 
 export default App;

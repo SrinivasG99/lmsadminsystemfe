@@ -15,10 +15,12 @@ const navigate = useNavigate()
 
     return (
       <div>
-        <div style={{height:'1000px'}}>
-
+        <div>
+          HELLO {auth.user.name}
         </div>
-        <p style={{marginTop: '1000px'}}>Welcome {auth.user.name}</p>
+        <p>
+            AIEIPGEneg
+        </p>
         <Button onClick={handleLogout}>logout</Button>
       </div>
     );

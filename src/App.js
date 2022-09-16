@@ -20,7 +20,10 @@ function App() {
       <Routes>
         <Route path = "/" element={<Login />} />
 
-        <Route path = "/LmsAdminManagement" element={<RequireAuth><LmsAdminManagement style={{marginTop : "1000px"}}/></RequireAuth>} />
+        <Route path = "/LmsAdminManagement" element={
+        <RequireAuth>
+          <LmsAdminManagement/>
+        </RequireAuth>} />
 
       </Routes>
     </Router>

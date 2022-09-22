@@ -5,11 +5,11 @@ import Login from "../pages/Login"
 function UnauthRoutes() {
     return (
         <Routes>
-<Appbar/>
-        <Route path="/" element={<Login />} />
+            <Appbar />
+            <Route path="/" element={<Login />} />
 
 
         </Routes>
-    
+
     )
 }

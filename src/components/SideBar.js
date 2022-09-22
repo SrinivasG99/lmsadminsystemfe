@@ -17,9 +17,9 @@ function SideBar(props) {
     <div>
       <div className='drawerContainer'>
         <List>
-            {['HELLO PLACEHOLDER'].map((text, index) => (
+            {['Admin'].map((text, index) => (
             <ListItem key={text} disablePadding>
-                <ListItemButton>
+                <ListItemButton component={Link} to="/LmsAdminManagement">
                 <ListItemText primary={text} />
                 </ListItemButton>
             </ListItem>
@@ -27,9 +27,9 @@ function SideBar(props) {
         </List>
         <Divider />
             <List>
-                {['LearnerCreation'].map((text, index) => (
+                {['Educator'].map((text, index) => (
                 <ListItem key={text} disablePadding>
-                    <ListItemButton component={Link} to="/learnerCreation">
+                    <ListItemButton component={Link} to="/OrgAdmin">
                         <ListItemText primary={text} />
                     </ListItemButton>
                 </ListItem>
@@ -37,14 +37,25 @@ function SideBar(props) {
             </List>
             <Divider />
             <List>
-                {['EducatorCreation'].map((text, index) => (
+                {['Learner'].map((text, index) => (
                 <ListItem key={text} disablePadding>
-                    <ListItemButton>
+                    <ListItemButton component={Link} to="/Learner">
                     <ListItemText primary={text} />
                     </ListItemButton>
                 </ListItem>
                 ))}
             </List>
+            <Divider />
+            <List>
+                {['My Profile'].map((text, index) => (
+                <ListItem key={text} disablePadding>
+                    <ListItemButton component={Link} to="/MyProfile">
+                        <ListItemText primary={text} />
+                    </ListItemButton>
+                </ListItem>
+                ))}
+            </List>
+            <Divider />
       </div>
     </div>
   );

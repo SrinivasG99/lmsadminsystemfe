@@ -9,6 +9,11 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import { useAuth } from "../context/AuthProvider";
+import { useNavigate } from 'react-router-dom';
+
+
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 
 
@@ -37,6 +42,12 @@ export default function Appbar() {
   const [click, setClick] = useState(false);
   const [button, setButton] = useState(true);
   const auth = useAuth()
+  const navigate = useNavigate()
+
+    const handleLogout = () => {
+        auth.logout()
+        navigate('/')
+    }
 
 
   const showButton = () => {
@@ -55,7 +66,6 @@ export default function Appbar() {
 
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  if (auth.user) {
   return (<>
 
     <Box sx={{ display: 'flex' }}>
@@ -69,13 +79,15 @@ export default function Appbar() {
               <ul className={'top-nav-menu'}>
                   <li>
                       <Link to ='/settings' className='top-nav-links'>
- 
+                      <IconButton color="primary" aria-label="upload picture" component="label">
+                          <SettingsIcon color="disabled"></SettingsIcon>
+                        </IconButton>
                       </Link>
                   </li>
                   <li>
-                      <Link to ='/learnerCreation' className='top-nav-links'>
-
-                      </Link>
+                      <IconButton color="primary" aria-label="upload picture" component="label" onClick={handleLogout}>
+                          <LogoutIcon color="disabled"></LogoutIcon>
+                        </IconButton>
                   </li>
               </ul>
             </div>
@@ -97,7 +109,4 @@ export default function Appbar() {
     <div style={{height:"150px"}}></div>
     </>
   );
-  } else {
-    return <></>
-  }
 }

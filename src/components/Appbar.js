@@ -101,6 +101,12 @@ export default function Appbar() {
                         </Link>
                     </li>
 
+                    <li className='nav-item'>
+                        <Link to ='/myTeachingCoursesList' className='nav-links'>
+                            Courses
+                        </Link>
+                    </li>
+
                 </ul>
             </div>
         </nav>

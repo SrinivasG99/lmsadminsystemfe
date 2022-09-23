@@ -1,25 +1,87 @@
-import { Chip, Divider, Grid} from '@mui/material';
+import { Button, Chip, Divider, Grid} from '@mui/material';
 import React, { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import OrgApprovalSideBar from '../components/OrgApprovalSideBar';
+import axios from 'axios';
 const PendingApproval = () => {
     const [approvals, setApprovals] = useState([]);
 
+    const handleApproval = async (e,params) => {
+        console.log(params.row)
+        const appReq = params.row;
+
+    
+        try {
+          const response = await axios.post(
+              "http://localhost:8080/orgAdminApprovalReq/approveOrgAdmin", appReq
+            );
+            // set the state of the user
+            const reply = response.data
+            console.log(reply)
+            
+            
+      } catch (error) {
+          // Handle error here
+          console.log(error.message)
+      }
+    }
 
     const columns = [
         { field: 'orgAdminApprovalId', headerName: 'Organisation Admin Request ID', width: 300},
-        { field: 'adminName', headerName: 'Name', width: 300},
-        { field: 'adminEmail', headerName: 'Email', width: 300},
+        { field: 'adminName', headerName: 'Name', width: 200},
+        { field: 'adminEmail', headerName: 'Email', width: 200},
         {
           field: 'adminNumber',
           headerName: 'Phone Number',
-          width: 300
+          width: 200
         },
         {
           field: 'orgName',
           headerName: 'Name of Organisation',
-          width: 300
-        }
+          width: 200
+        },
+        {
+            headerName: 'Action',
+            width: 500,
+            renderCell: (params) => {
+              return(
+                <div>
+                <Button
+                  variant="contained"
+                  size="small"
+                  tabIndex={params.hasFocus ? 0 : -1}
+                //   onClick={(event) => {
+                //     handleOnClick(event,params);
+                //   }}
+                >
+                  View Details
+                </Button> 
+                &nbsp;&nbsp;&nbsp;
+                <Button
+                  variant="contained"
+                  size="small"
+                  tabIndex={params.hasFocus ? 0 : -1}
+                  onClick={(event) => {
+                    handleApproval(event,params);
+                  }}
+                >
+                  Approve Request
+                </Button>
+                &nbsp;&nbsp;&nbsp;
+                <Button
+                  variant="contained"
+                  size="small"
+                  tabIndex={params.hasFocus ? 0 : -1}
+                //   onClick={(event) => {
+                //     handleOnClick(event,params);
+                //   }}
+                >
+                  Reject Request
+                </Button>
+                </div>
+              );
+              },
+          },
       ];
       React.useEffect(() => {
         fetch("http://localhost:8080/orgAdminApprovalReq/getAllPending")

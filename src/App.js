@@ -13,6 +13,9 @@ import TeachingCourse from './pages/TeachingCourse';
 import TeachingCourseSettings from './components/TeachingCourseSettings';
 import TeachingFileList from './components/TeachingFileList';
 import TeachingChildFileCover from './components/TeachingChildFileCover';
+import PendingApprovalReq from './pages/PendingApprovalReq';
+import ApprovedApprovalReq from './pages/ApprovedApprovalReq';
+import RejectedApprovalReq from './pages/RejectedApprovalReq';
 
 
 
@@ -22,77 +25,94 @@ function App() {
 
       <AuthProvider>
 
-    <Router>
+        <Router>
 
-    {/* <Appbar/> */}
-      <Routes>
-        <Route path = "/" element={<Login />} />
+          {/* <Appbar/> */}
+          <Routes>
+            <Route path="/" element={<Login />} />
 
-        <Route path = "/LmsAdminManagement" element={
-        <RequireAuth>
-          <Appbar />
-          <LmsAdminManagement/>
-        </RequireAuth>} />
+            <Route path="/LmsAdminManagement" element={
+              <RequireAuth>
+                <Appbar />
+                <LmsAdminManagement />
+              </RequireAuth>} />
 
-        <Route path = "/MyProfile" element={
-        <RequireAuth>
-          <Appbar />
-          <MyProfile/>
-        </RequireAuth>} />
+            <Route path="/MyProfile" element={
+              <RequireAuth>
+                <Appbar />
+                <MyProfile />
+              </RequireAuth>} />
 
-        <Route path = "/OrgAdmin" element={
-        <RequireAuth>
-          <Appbar />
-          <OrgAdmin/>
-        </RequireAuth>} />
+            <Route path="/OrgAdmin" element={
+              <RequireAuth>
+                <Appbar />
+                <OrgAdmin />
+              </RequireAuth>} />
 
-        <Route path = "/Learner" element={
-        <RequireAuth>
-          <Appbar />
-          <Learner/>
-        </RequireAuth>} />
+            <Route path="/Learner" element={
+              <RequireAuth>
+                <Appbar />
+                <Learner />
+              </RequireAuth>} />
 
-        <Route path = "/myTeachingCoursesList" element={
-        <RequireAuth>
-          <Appbar />
-          <TeachingCoursesList/>
-        </RequireAuth>} />
+            <Route path="/myTeachingCoursesList" element={
+              <RequireAuth>
+                <Appbar />
+                <TeachingCoursesList />
+              </RequireAuth>} />
 
-        <Route path = "/myTeachingCourse/:courseId" element={
-        <RequireAuth>
-          <Appbar />
-          <TeachingCourse />
-        </RequireAuth>} />
+            <Route path="/myTeachingCourse/:courseId" element={
+              <RequireAuth>
+                <Appbar />
+                <TeachingCourse />
+              </RequireAuth>} />
 
-        <Route path = "/myTeachingCourse/:courseId/courseSettings" element={
-        <RequireAuth>
-          <Appbar />
-          <TeachingCourseSettings />
-        </RequireAuth>} />
+            <Route path="/myTeachingCourse/:courseId/courseSettings" element={
+              <RequireAuth>
+                <Appbar />
+                <TeachingCourseSettings />
+              </RequireAuth>} />
 
-        <Route path = "/myTeachingCourse/:courseId/files" element={
-        <RequireAuth>
-          <Appbar />
-          <TeachingFileList />
-        </RequireAuth>} />
+            <Route path="/myTeachingCourse/:courseId/files" element={
+              <RequireAuth>
+                <Appbar />
+                <TeachingFileList />
+              </RequireAuth>} />
 
-        <Route path = "/myTeachingCourse/:courseId/files/:folderId" element={
-        <>
-          <Appbar />
-          <TeachingChildFileCover/>
-        </>} />
+            <Route path="/myTeachingCourse/:courseId/files/:folderId" element={
+              <>
+                <Appbar />
+                <TeachingChildFileCover />
+              </>} />
 
-        <Route path = "/myTeachingCourse/:courseId/files" element={
-        <RequireAuth>
-          <Appbar />
-          <TeachingFileList />
-        </RequireAuth>} />
+            <Route path="/myTeachingCourse/:courseId/files" element={
+              <RequireAuth>
+                <Appbar />
+                <TeachingFileList />
+              </RequireAuth>} />
 
-      </Routes>
-    </Router>
-    </AuthProvider>
-  </div>
-);
+            <Route path="/ApprovedApprovalReq" element={
+              <RequireAuth>
+                <Appbar />
+                <ApprovedApprovalReq />
+              </RequireAuth>} />
+
+            <Route path="/PendingApprovalReq" element={
+              <RequireAuth>
+                <Appbar />
+                <PendingApprovalReq />
+              </RequireAuth>} />
+
+            <Route path="/RejectedApprovalReq" element={
+              <RequireAuth>
+                <Appbar />
+                <RejectedApprovalReq />
+              </RequireAuth>} />
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </div>
+  );
 
 }
 

@@ -77,10 +77,10 @@ function App() {
         </RequireAuth>} />
 
         <Route path = "/myTeachingCourse/:courseId/files/:folderId" element={
-        <RequireAuth>
+        <>
           <Appbar />
           <TeachingChildFileCover/>
-        </RequireAuth>} />
+        </>} />
 
         <Route path = "/myTeachingCourse/:courseId/files" element={
         <RequireAuth>

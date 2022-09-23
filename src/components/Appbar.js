@@ -100,6 +100,13 @@ export default function Appbar() {
                             Lms Admin Management
                         </Link>
                     </li>
+                    <li className='nav-item'>
+                        <Link to ='/PendingApprovalReq' className='nav-links'>
+                            Organisation Admin Approval Management
+                        </Link>
+                    </li>
+                    
+
 
                 </ul>
             </div>

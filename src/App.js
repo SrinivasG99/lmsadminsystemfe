@@ -9,6 +9,9 @@ import Appbar from './components/Appbar';
 import MyProfile from './pages/MyProfile';
 import Learner from './pages/Learner'
 import OrgAdmin from './pages/OrgAdmin'
+import PendingApprovalReq from './pages/PendingApprovalReq';
+import ApprovedApprovalReq from './pages/ApprovedApprovalReq';
+import RejectedApprovalReq from './pages/RejectedApprovalReq';
 
 
 
@@ -46,6 +49,24 @@ function App() {
         <RequireAuth>
           <Appbar />
           <Learner/>
+        </RequireAuth>} />
+
+        <Route path = "/ApprovedApprovalReq" element={
+        <RequireAuth>
+          <Appbar />
+          <ApprovedApprovalReq/>
+        </RequireAuth>} />
+
+        <Route path = "/PendingApprovalReq" element={
+        <RequireAuth>
+          <Appbar />
+          <PendingApprovalReq/>
+        </RequireAuth>} />
+
+        <Route path = "/RejectedApprovalReq" element={
+        <RequireAuth>
+          <Appbar />
+          <RejectedApprovalReq/>
         </RequireAuth>} />
       </Routes>
     </Router>

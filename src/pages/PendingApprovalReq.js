@@ -5,11 +5,14 @@ import OrgApprovalSideBar from '../components/OrgApprovalSideBar';
 import axios from 'axios';
 import RejectDialog from '../components/RejectDialog';
 import ViewOrgAdminApprovalReq from "../components/ViewOrgAdminApprovalReq";
+import CheckDialog from '../components/CheckDialog';
 const PendingApproval = () => {
     const [approvals, setApprovals] = useState([]);
     const [refreshArr, setRefreshArr] = useState(true);
     const [currReq, setCurrReq] = useState(undefined)
     const [open, setOpen] = React.useState(false);
+    const [openCheck, setOpenCheck] = React.useState(false);
+
 
     const [openRejDialog, setOpenRejDialog] = React.useState(false);
   
@@ -27,6 +30,17 @@ const handleCloseRejDialog = () => {
 };
 
 
+const handleOpenCheck = (event,params) => {
+  setCurrReq(params.row)
+setOpenCheck(true);
+};
+
+
+const handleCloseCheck = () => {
+setOpenCheck(false);
+};
+
+
 
 const handleOpen = (event,param) => {
   setCurrReq(param.row)
@@ -36,26 +50,6 @@ function handleClose(ed) {
   setOpen(false);
 }
 
-
-  const handleApproval = async (e, params) => {
-    console.log(params.row);
-    const appReq = params.row;
-
-    
-        try {
-          const response = await axios.post(
-              "http://localhost:8080/orgAdminApprovalReq/approveOrgAdmin", appReq
-            );
-            // set the state of the user
-            const reply = response.data
-            console.log(reply)
-            setRefreshArr(!refreshArr)
-            
-      } catch (error) {
-          // Handle error here
-          console.log(error.message)
-      }
-    }
   
   const columns = [
     {
@@ -108,7 +102,7 @@ function handleClose(ed) {
               size="small"
               tabIndex={params.hasFocus ? 0 : -1}
               onClick={(event) => {
-                handleApproval(event, params);
+                handleOpenCheck(event, params);
               }}
             >
               Approve Request
@@ -170,6 +164,13 @@ function handleClose(ed) {
       onClose={handleCloseRejDialog}
       currReq={currReq}
       ></RejectDialog>
+      <CheckDialog
+      refresh={refresh}
+      open={openCheck}
+      onClose={handleCloseCheck}
+      currReq={currReq}
+      >
+      </CheckDialog>
       </div>)
 };
 

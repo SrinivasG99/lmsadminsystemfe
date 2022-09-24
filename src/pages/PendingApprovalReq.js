@@ -1,36 +1,62 @@
-import { Button, Chip, Divider, Grid, Modal } from "@mui/material";
-import React, { useState } from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import OrgApprovalSideBar from "../components/OrgApprovalSideBar";
-import axios from "axios";
+import { Button, Chip, Divider, Grid, Modal} from '@mui/material';
+import React, { useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import OrgApprovalSideBar from '../components/OrgApprovalSideBar';
+import axios from 'axios';
+import RejectDialog from '../components/RejectDialog';
 import ViewOrgAdminApprovalReq from "../components/ViewOrgAdminApprovalReq";
 const PendingApproval = () => {
-  const [approvals, setApprovals] = useState([]);
+    const [approvals, setApprovals] = useState([]);
+    const [refreshArr, setRefreshArr] = useState(true);
+    const [currReq, setCurrReq] = useState(undefined)
+    const [open, setOpen] = React.useState(false);
+
+    const [openRejDialog, setOpenRejDialog] = React.useState(false);
+  
+const handleOpenRejDialog = (event,params) => {
+    setCurrReq(params.row)
+  setOpenRejDialog(true);
+};
+
+const refresh = () => {
+  setRefreshArr(!refreshArr)
+}
+
+const handleCloseRejDialog = () => {
+  setOpenRejDialog(false);
+};
+
+
+
+const handleOpen = (event,param) => {
+  setCurrReq(param.row)
+  setOpen(true);
+}
+function handleClose(ed) {
+  setOpen(false);
+}
+
 
   const handleApproval = async (e, params) => {
     console.log(params.row);
     const appReq = params.row;
 
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/orgAdminApprovalReq/approveOrgAdmin",
-        appReq
-      );
-      // set the state of the user
-      const reply = response.data;
-      console.log(reply);
-    } catch (error) {
-      // Handle error here
-      console.log(error.message);
+    
+        try {
+          const response = await axios.post(
+              "http://localhost:8080/orgAdminApprovalReq/approveOrgAdmin", appReq
+            );
+            // set the state of the user
+            const reply = response.data
+            console.log(reply)
+            setRefreshArr(!refreshArr)
+            
+      } catch (error) {
+          // Handle error here
+          console.log(error.message)
+      }
     }
-  };
-
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  function handleClose(ed) {
-    setOpen(false);
-  }
-
+  
   const columns = [
     {
       field: "orgAdminApprovalId",
@@ -59,7 +85,9 @@ const PendingApproval = () => {
               variant="contained"
               size="small"
               tabIndex={params.hasFocus ? 0 : -1}
-              onClick={handleOpen}
+              onClick={(event) => {
+                handleOpen(event, params);
+              }}
             >
               View Details
             </Button>
@@ -71,7 +99,7 @@ const PendingApproval = () => {
             >
               <ViewOrgAdminApprovalReq
                 closeModalFunc={handleClose}
-                approvalReqIdProp={params.row.orgAdminApprovalId}
+                approvalReq={currReq}
               ></ViewOrgAdminApprovalReq>
             </Modal>
             &nbsp;&nbsp;&nbsp;
@@ -90,9 +118,9 @@ const PendingApproval = () => {
               variant="contained"
               size="small"
               tabIndex={params.hasFocus ? 0 : -1}
-              //   onClick={(event) => {
-              //     handleOnClick(event,params);
-              //   }}
+                  onClick={(event) => {
+                    handleOpenRejDialog(event,params);
+                  }}
             >
               Reject Request
             </Button>
@@ -107,7 +135,8 @@ const PendingApproval = () => {
       .then((result) => {
         setApprovals(result);
       });
-  }, []);
+  }, [refreshArr]);
+
 
   return (
     <div>
@@ -135,8 +164,13 @@ const PendingApproval = () => {
           <br></br>
         </Grid>
       </Grid>
-    </div>
-  );
+      <RejectDialog
+      refresh={refresh}
+      open={openRejDialog}
+      onClose={handleCloseRejDialog}
+      currReq={currReq}
+      ></RejectDialog>
+      </div>)
 };
 
 export default PendingApproval;

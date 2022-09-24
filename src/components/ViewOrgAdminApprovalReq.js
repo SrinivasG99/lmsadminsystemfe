@@ -1,26 +1,47 @@
 import { Button, Grid, Paper } from "@mui/material";
+import axios from "axios";
 import React from "react";
-import { Link } from "react-router-dom";
 
 export default function ViewOrgAdminApprovalReq(props) {
-  const [approvalRequest, setApprovalRequest] = React.useState("");
+  const approvalRequest = props.approvalReq;
+  console.log(approvalRequest)
   const paperStyle = {
     padding: "10px 10px",
     width: 800,
     margin: "20px auto",
   };
 
-  React.useEffect(() => {
-    fetch(
-      "http://localhost:8080/orgAdminApprovalReq/getPending?requestId=" +
-        JSON.stringify(props.approvalReqIdProp)
-    )
-      .then((res) => res.json())
-      .then((result) => {
-        setApprovalRequest(result);
-        console.log(result);
-      });
-  }, []);
+  const handleDownload= async (event) => {
+    event.preventDefault();
+    console.log(approvalRequest.fileStorageName)
+    try {
+      const response = await axios.get(
+          `http://localhost:8080/downloadFileFromName/${approvalRequest.fileStorageName}`, {
+            responseType: 'arraybuffer'
+        }
+        );
+        const file = new Blob([(response.data)], {type: "application/zip"})
+        const element = document.createElement('a');
+        element.href = window.URL.createObjectURL(file, {type: "application/zip"})
+        element.download = "ReqAttachment-" + Date.now() + ".zip"
+
+
+    // Append to html link element page
+    document.body.appendChild(element);
+
+    // Start download
+    element.click();
+
+    // Clean up and remove the link
+    element.parentNode.removeChild(element);
+
+  } catch (error) {
+      // Handle error here
+      console.log(error.message)
+  }
+  }
+
+
 
   return (
     <div>
@@ -43,8 +64,6 @@ export default function ViewOrgAdminApprovalReq(props) {
           <br />
           Admin Username: {approvalRequest.username}
           <br />
-          Admin Password: {approvalRequest.password}
-          <br />
           <br />
         </Paper>
 
@@ -66,9 +85,9 @@ export default function ViewOrgAdminApprovalReq(props) {
                   alignContent: "space-around",
                   justifyContent: "space-between"}}>
           <Button onClick={props.closeModalFunc}>back</Button>
-          <Button>Download Content</Button>
+          <Button onClick={handleDownload} disabled={approvalRequest.fileStorageName.length === 0}>Download Content</Button>
         </div>
       </Paper>
     </div>
   );
-}
+} 

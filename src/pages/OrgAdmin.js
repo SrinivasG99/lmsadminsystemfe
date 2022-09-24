@@ -7,6 +7,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
 const OrgAdmin = () => {
     const [admins, setAdmins] = useState([]);
+    const [refreshArr, setRefreshArr] = useState(true);
 
     const handleOnClick = async (e,orgAdmin) => {
       e.preventDefault();
@@ -23,7 +24,7 @@ const OrgAdmin = () => {
           // set the state of the user
           const user = response.data
           console.log(user)
-          
+          setRefreshArr(!refreshArr)
           
     } catch (error) {
         // Handle error here
@@ -34,7 +35,7 @@ const OrgAdmin = () => {
     const columns = [
         { field: 'organisationAdminId', headerName: 'Organisation Admin ID', width: 200},
         { field: 'name', headerName: 'Name', width: 200},
-        { field: 'email', headerName: 'Email', width: 200},
+        { field: 'email', headerName: 'Email', width: 300},
         {
           field: 'username',
           headerName: 'Username',
@@ -70,7 +71,7 @@ const OrgAdmin = () => {
           .then((result) => {
             setAdmins(result);
           });
-      }, []);
+      }, [refreshArr]);
       
     return (
         <div>

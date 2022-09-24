@@ -16,6 +16,7 @@ import TeachingChildFileCover from './components/TeachingChildFileCover';
 import PendingApprovalReq from './pages/PendingApprovalReq';
 import ApprovedApprovalReq from './pages/ApprovedApprovalReq';
 import RejectedApprovalReq from './pages/RejectedApprovalReq';
+import Tags from './pages/Tags';
 
 
 
@@ -107,6 +108,12 @@ function App() {
               <RequireAuth>
                 <Appbar />
                 <RejectedApprovalReq />
+              </RequireAuth>} />
+
+            <Route path="/tags" element={
+              <RequireAuth>
+                <Appbar />
+                <Tags />
               </RequireAuth>} />
           </Routes>
         </Router>

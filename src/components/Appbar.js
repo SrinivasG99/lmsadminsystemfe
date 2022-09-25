@@ -12,12 +12,14 @@ import { useAuth } from "../context/AuthProvider";
 import { useNavigate } from 'react-router-dom';
 
 
-import SettingsIcon from '@mui/icons-material/Settings';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+
 import LogoutIcon from '@mui/icons-material/Logout';
 
 
 
 import '../css/Appbar.css';
+import { Avatar, Menu, MenuItem, Tooltip } from '@mui/material';
 
 const drawerWidth = 240;
 
@@ -42,6 +44,7 @@ export default function Appbar() {
   const [click, setClick] = useState(false);
   const [button, setButton] = useState(true);
   const auth = useAuth()
+  const user = auth.user;
   const navigate = useNavigate()
 
     const handleLogout = () => {
@@ -66,32 +69,83 @@ export default function Appbar() {
 
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
   return (<>
 
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar>
-            <Typography variant="h6" noWrap component="div" style={{marginLeft:"40px"}}>
+      <Toolbar>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              style={{ marginLeft: "40px" }}
+            >
               EduCouch
             </Typography>
-            <div style={{marginLeft:"auto"}}>
-              <ul className={'top-nav-menu'}>
-                  <li>
-                      <Link to ='/settings' className='top-nav-links'>
-                      <IconButton color="primary" aria-label="upload picture" component="label">
-                          <SettingsIcon color="disabled"></SettingsIcon>
-                        </IconButton>
-                      </Link>
-                  </li>
-                  <li>
-                      <IconButton color="primary" aria-label="upload picture" component="label" onClick={handleLogout}>
-                          <LogoutIcon color="disabled"></LogoutIcon>
-                        </IconButton>
-                  </li>
-              </ul>
+            <div style={{ marginLeft: "auto" }}>
+              <Box sx={{ flexGrow: 0 }}> 
+                <div style={{float: 'left', paddingRight: 10}}>
+                  <Typography variant="body2">Name: {user.name}</Typography>
+                  <Typography variant="body2">Role: LMS Admin</Typography>
+                </div>
+                <div style={{float: 'right'}}>
+                  <Tooltip title="Open settings">
+                    <IconButton
+                      onClick={handleOpenUserMenu}
+                      sx={{ p: 0 }}
+                      style={{ marginLeft: "auto" }}
+                    >
+                      <Avatar alt="avatar" src={user.profilePicture} />
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    sx={{ mt: "45px" }}
+                    id="menu-appbar"
+                    anchorEl={anchorElUser}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    open={Boolean(anchorElUser)}
+                    onClose={handleCloseUserMenu}
+                  >
+                    <Link
+                      to="/myProfile"
+                      style={{ textDecoration: "none", color: "black" }}
+                      onClick={handleCloseUserMenu}
+                    >
+                      <MenuItem style={{ justifyContent: "center" }}>
+                        <AccountCircleIcon color="disabled" />
+                        &nbsp;
+                        <Typography>Profile</Typography>
+                      </MenuItem>
+                    </Link>
+                    <MenuItem
+                      style={{ justifyContent: "center" }}
+                      onClick={handleLogout}
+                    >
+                      <LogoutIcon color="disabled" />
+                      &nbsp;
+                      <Typography>Logout</Typography>
+                    </MenuItem>
+                  </Menu>
+                </div>
+              </Box>
             </div>
-        </Toolbar>
+          </Toolbar>
         <nav className="navbar">
             <div className="navbar-container">
                 <ul className={'nav-menu'}>

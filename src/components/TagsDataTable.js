@@ -7,8 +7,6 @@ const columns = [
 
 ];
 
-
-
 export default function DataTable() {
   const [rows, setRows] = useState([]);
 

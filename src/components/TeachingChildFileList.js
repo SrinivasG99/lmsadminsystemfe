@@ -28,16 +28,18 @@ import UploadService from "../services/UploadFilesService";
 
 function TeachingChildFileList() {
     var courseId = useParams();
-    courseId = courseId.moduleCode;
+    courseId = courseId.courseId;
 
     var folderId = useParams();
     folderId = folderId.folderId;
+
+    const [folderIdRefresh, setFolderIdRefresh] = useState(folderId);
 
     const [folderList, setFolderList] = useState([]);
     const [attachmentList, setAttachmentList] = useState([]);
 
     React.useEffect(() => {
-        fetch("http://localhost:8080/folder/getFolderByFolderId/" + folderId)
+        fetch("http://localhost:8080/folder/getFolderByFolderId/" + folderIdRefresh)
             .then(res => res.json())
             .then((result) => {
                 var fol = result;
@@ -49,21 +51,20 @@ function TeachingChildFileList() {
             });
     }, []);
 
-    const refresh = () => {
-        fetch("http://localhost:8080/folder/getFolderByFolderId/" + folderId)
+    const changeFolderIdWrapper = (num) => {
+        fetch("http://localhost:8080/folder/getFolderByFolderId/" + num)
             .then(res => res.json())
             .then((result) => {
                 var fol = result;
-                console.log(JSON.stringify(fol));
                 setFolderList(fol.childFolders);
                 setAttachmentList(fol.attachments);
-                console.log("Length of folder is " + folderList.length);
-                console.log("Length of attachment is " + attachmentList.length);
             }
             ).catch((err) => {
                 console.log(err.message);
             });
     };
+
+
 
     return (
         <div>
@@ -80,7 +81,7 @@ function TeachingChildFileList() {
                     <div>
                         {folderList && folderList.length > 0 &&
                             folderList
-                                .map((folder) => (<TeachingFileComponent folder={folder} courseId={courseId} ></TeachingFileComponent>))
+                                .map((folder) => (<TeachingFileComponent folder={folder} courseId={courseId} changeFolderIdWrapper = {changeFolderIdWrapper}></TeachingFileComponent>))
                         }
                         {attachmentList && attachmentList.length > 0 &&
                             attachmentList

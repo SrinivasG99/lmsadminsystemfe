@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import TeachingCoursesDrawer from '../components/TeachingCoursesDrawer';
-import { Container, Paper, Box } from '@mui/material';
+import { Container, Paper, Box,Grid } from '@mui/material';
 import CourseStatusAccordion from '../components/CourseStatusAccordion';
 import CourseTags from '../components/CourseTags';
 
@@ -52,32 +52,37 @@ export default function TeachingCourseSettings(props) {
     };
 
     return (
-        <Container>
-            <TeachingCoursesDrawer courseId={courseId}></TeachingCoursesDrawer>
-            <CourseStatusAccordion course={course} refresh = {refresh}></CourseStatusAccordion>
-            <br/>
-            <CourseTags courseId = {courseId.courseId}></CourseTags>
-            <Paper elevation={3} style={paperStyle}>
-                <h1 style={headingStyle}> Course Description</h1>
-                <Box
-                    component="form"
-                    sx={{
-                        '& > :not(style)': { m: 1 },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                >
-                    <p>{course.courseDescription}</p>
-                    <p>This course is catered for {course.ageGroup} learners!</p>
-                </Box>
-            </Paper>
+        <Grid container spacing={0}>
+            <Grid item xs={2}> <TeachingCoursesDrawer courseId={courseId}></TeachingCoursesDrawer></Grid>
+            <Grid item xs ={10}>
+            <CourseStatusAccordion course={course} refresh={refresh}></CourseStatusAccordion>
+                <br />
+                <CourseTags courseId={courseId.courseId}></CourseTags>
+                <Paper elevation={3} style={paperStyle}>
+                    <h1 style={headingStyle}> Course Description</h1>
+                    <Box
+                        component="form"
+                        sx={{
+                            '& > :not(style)': { m: 1 },
+                        }}
+                        noValidate
+                        autoComplete="off"
+                    >
+                        <p>{course.courseDescription}</p>
+                        <p>This course is catered for {course.ageGroup} learners!</p>
+                    </Box>
+                </Paper>
 
-            <Paper elevation={3} style={paperStyle}>
-                <h1 style={headingStyle}> Course Timeline</h1>
-                <p>{course.courseTimeline}</p>
+                <Paper elevation={3} style={paperStyle}>
+                    <h1 style={headingStyle}> Course Timeline</h1>
+                    <p>{course.courseTimeline}</p>
 
-            </Paper>
-        </Container>
+                </Paper>
+            </Grid>
+
+        </Grid>
+
+
 
     );
 

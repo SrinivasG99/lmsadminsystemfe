@@ -24,13 +24,22 @@ import InstantSuccessMessage from './InstantSuccessMessage';
 
 
 
-function TeachingFileComponent({ folder, courseId }) {
+function TeachingFileComponent({ folder, courseId, changeFolderIdWrapper}) {
+
+    // navigate to child folder
+    const navigate = useNavigate();
+    const navigateChildFolder = () => {
+        navigate(`/myTeachingCourse/${courseId}/files/${folder.folderId}`);
+        changeFolderIdWrapper(folder.folderId);
+        console.log("Running " + folder.folderId);
+        
+    };
 
     return (
 
         <List>
             <ListItem>
-                <ListItemButton href={`/myTeachingCourse/${courseId}/files/${folder.folderId}`}>
+                <ListItemButton onClick = {navigateChildFolder}>
                 
                     <ListItemIcon>
                         <img class="folder-picture" src={folderPicture} />

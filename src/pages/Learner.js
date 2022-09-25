@@ -84,7 +84,7 @@ const Learner = () => {
       
                           </Grid>
                       <Grid item xs={10}>
-                      <h1>View All Organisation Admins</h1>
+                      <h1>View All Learners</h1>
 
  
           <div style={{ height: 400, width: '100%' }}>

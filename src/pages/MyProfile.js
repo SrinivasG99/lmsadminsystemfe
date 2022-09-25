@@ -41,11 +41,11 @@ function handleClose(ed) {
 
 
             </Grid>
-        <Grid item xs={10}>
-            <Card>
+        <Grid item xs={3}>
+            <Card >
             <CardMedia
         component="img"
-        height="140"
+        height="500"
         image={user.profilePicture ? user.profilePicture : NoProfilePic}
         alt=""
       />

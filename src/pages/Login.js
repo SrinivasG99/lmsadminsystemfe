@@ -20,7 +20,7 @@ function Copyright(props) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        Educouch
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -35,12 +35,24 @@ export default function Login() {
     const navigate = useNavigate()
     const [username, setUsername] = React.useState("")
     const [password, setPassword] = React.useState("")
+    const [usernameError, setUsernameError] = React.useState({ value: false, errorMessage: '' })
+    const [passwordError, setPasswordError] = React.useState({ value: false, errorMessage: '' })
+
+    
     auth.logout()
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // console.log(event)
-    // console.log(username, password)
-    // const data = new FormData(event.currentTarget);
+    setPasswordError({ value: false, errorMessage: '' })
+    setUsernameError({ value: false, errorMessage: '' })
+
+
+    if (password == '') {
+      setPasswordError({ value: true, errorMessage: 'You must enter a password' })
+    }
+    if (username == '') {
+      setUsernameError({ value: true, errorMessage: 'You must enter a username' })
+    }
+if(password && username) {
     try {
         const response = await axios.post(
             `http://localhost:8080/lmsadmin/login?username=${username}&password=${password}`
@@ -54,7 +66,11 @@ export default function Login() {
     } catch (error) {
         // Handle error here
         console.log(error.message)
+        setPasswordError({ value: true, errorMessage: 'User does not exist or password does not match' })
+        setUsernameError({ value: true, errorMessage: 'User does not exist or password does not match' })
     }
+
+  }
 
       
   };
@@ -94,6 +110,8 @@ export default function Login() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               autoFocus
+              error={usernameError.value}
+              helperText={usernameError.errorMessage}
             />
             <TextField
               margin="normal"
@@ -106,10 +124,8 @@ export default function Login() {
             //   autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+            error={passwordError.value}
+            helperText={passwordError.errorMessage}
             />
             <Button
               type="submit"

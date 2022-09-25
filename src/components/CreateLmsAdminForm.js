@@ -5,55 +5,62 @@ import { Container } from "@mui/system";
 import axios from "axios";
 
 import {
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  FormControl,
-  FormLabel,
-  Stack,
-  Alert,
-} from "@mui/material";
-import {
   Paper,
   Button,
-  createTheme,
 } from "@mui/material";
 import { useState } from "react";
-import { toHaveStyle } from "@testing-library/jest-dom/dist/matchers";
 
 export default function CreateLmsAdminForm(props) {
   const addToList = props.addToList
-  const theme = createTheme({
-    components: {
-      MuiLinearProgress: {
-        styleOverrides: {
-          root: {
-            height: 15,
-            borderRadius: 5,
-          },
-          colorPrimary: {
-            backgroundColor: "#EEEEEE",
-          },
-          bar: {
-            borderRadius: 5,
-            backgroundColor: "#1a90ff",
-          },
-        },
-      },
-    },
-  });
+
 
   const paperStyle = { padding: "50px 20px", width: 600, margin: "20px auto" };
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPasword] = useState("");
 
-  const[open,setOpen] = useState(false)
+  const [nameError, setNameError] = useState({ value: false, errorMessage: '' })
+  const [emailError, setEmailError] = useState({ value: false, errorMessage: '' })
+  const [usernameError, setUsernameError] = useState({ value: false, errorMessage: '' })
+  const [passwordError, setPasswordError] = useState({ value: false, errorMessage: '' })
+  const [confirmPasswordError, setConfirmPasswordError] = useState({ value: false, errorMessage: '' })
 
   const handleClick = async (e) => {
     e.preventDefault();
 
+    setNameError({ value: false, errorMessage: '' })
+    setEmailError({ value: false, errorMessage: '' })
+    setUsernameError({ value: false, errorMessage: '' })
+    setPasswordError({ value: false, errorMessage: '' })
+    setConfirmPasswordError({ value: false, errorMessage: '' })
+
+    if (name === '') {
+      setNameError({ value: true, errorMessage: 'You must enter a name' })
+  }
+  if (email ==='') {
+      setEmailError({ value: true, errorMessage: 'You must enter a email' })
+  }
+  if(!email.includes("@") || !email.includes(".com"))
+  {
+    setEmailError({ value: true, errorMessage: 'Invalid Email Address format' })
+
+  }
+  if (username === '') {
+    setUsernameError({ value: true, errorMessage: 'You must enter a username' })
+}
+if (password === '') {
+    setPasswordError({ value: true, errorMessage: 'You must enter a password' })
+}
+if (confirmPassword === '') {
+    setConfirmPasswordError({ value: true, errorMessage: 'You must confirm your password' })
+}
+if (confirmPassword !== password) {
+    setPasswordError({ value: true, errorMessage: 'Password does not match confirm password' })
+    setConfirmPasswordError({ value: true, errorMessage: 'Password does not match confirm password' })
+}
+if(name && email && username && password) {
     const lmsAdmin = { name, email, password, username};
     try {
       const response = await axios.post(
@@ -71,6 +78,7 @@ export default function CreateLmsAdminForm(props) {
       // Handle error here
       console.log(error.message)
   }
+}
 }
 
 
@@ -100,42 +108,62 @@ export default function CreateLmsAdminForm(props) {
           <br></br>
           <TextField
             id="outlined-basic"
-            label="LMS Admin Name"
+            label="Name"
             variant="outlined"
             fullWidth
             style={{ paddingBottom: "10px" }}
             value={name}
             onChange={(e) => setName(e.target.value)}
+            error={nameError.value}
+            helperText={nameError.errorMessage}
           />
           <TextField
             id="outlined-basic"
-            label="LMS Admin Email"
+            label="Email"
             variant="outlined"
             fullWidth
             style={{ paddingBottom: "10px" }}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            error={emailError.value}
+            helperText={emailError.errorMessage}
           />
 
           <TextField
             id="outlined-basic"
-            label="LMS Admin Username"
+            label="Username"
             variant="outlined"
             fullWidth
             style={{ paddingBottom: "10px" }}
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            error={usernameError.value}
+            helperText={usernameError.errorMessage}
           />
                     <TextField
             id="outlined-basic"
-            label="LMS Admin Password"
+            label="Password"
             variant="outlined"
             fullWidth
             style={{ paddingBottom: "10px" }}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            error={passwordError.value}
+            helperText={passwordError.errorMessage}
+            type="password"
           />
-
+                 <TextField
+            id="outlined-basic"
+            label="Confirm Password"
+            variant="outlined"
+            fullWidth
+            style={{ paddingBottom: "10px" }}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPasword(e.target.value)}
+            error={confirmPasswordError.value}
+            helperText={confirmPasswordError.errorMessage}
+            type="password"
+          />
           <br />
           <br />
           <br />

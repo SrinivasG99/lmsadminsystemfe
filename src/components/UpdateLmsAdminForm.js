@@ -57,6 +57,9 @@ export default function UpdateLmsAdminForm(props) {
   const [email, setEmail] = useState(auth.user.email);
   const [profilePicture, setProfilePicture] = useState("")
 
+  const [emailError, setEmailError] = useState({ value: false, errorMessage: '' })
+
+
   console.log("User: ", auth.user)
 //   const updateUser = auth.user
 
@@ -66,6 +69,13 @@ export default function UpdateLmsAdminForm(props) {
 
   const handleClick = async (e) => {
     e.preventDefault();
+    if(!email.includes("@") || !email.includes(".com"))
+    {
+      setEmailError({ value: true, errorMessage: 'Invalid Email Address format' })
+  
+    }
+
+    if(email.includes("@") && email.includes(".com")) {
     const newUser = { ...auth.user, name, email, profilePicture }
 
     try {
@@ -83,6 +93,7 @@ export default function UpdateLmsAdminForm(props) {
       // Handle error here
       console.log(error.message)
   }
+}
 }
 
 
@@ -212,11 +223,15 @@ export default function UpdateLmsAdminForm(props) {
             style={{ paddingBottom: "10px" }}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            error={emailError.value}
+            helperText={emailError.errorMessage}
           />
           <br />
           <br />
           <br />
-          <Button variant="contained" onClick={handleClick}>
+          <Button variant="contained" 
+          onClick={handleClick}
+          disabled={name ==="" || email === ""}>
             Submit
           </Button> 
           <br></br>

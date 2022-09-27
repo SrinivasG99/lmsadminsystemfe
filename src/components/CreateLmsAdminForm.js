@@ -9,9 +9,24 @@ import {
   Button,
 } from "@mui/material";
 import { useState } from "react";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 export default function CreateLmsAdminForm(props) {
   const addToList = props.addToList
+
+  const [openError, setOpenError] = React.useState(false);
+
+  const handleClickOpenError = () => {
+    setOpenError(true);
+  };
+
+  const handleCloseError = () => {
+    setOpenError(false);
+  };
 
 
   const paperStyle = { padding: "50px 20px", width: 600, margin: "20px auto" };
@@ -38,48 +53,49 @@ export default function CreateLmsAdminForm(props) {
 
     if (name === '') {
       setNameError({ value: true, errorMessage: 'You must enter a name' })
-  }
-  if (email ==='') {
+    }
+    if (email === '') {
       setEmailError({ value: true, errorMessage: 'You must enter a email' })
-  }
-  if(!email.includes("@") || !email.includes(".com"))
-  {
-    setEmailError({ value: true, errorMessage: 'Invalid Email Address format' })
+    }
+    if (!email.includes("@") || !email.includes(".com")) {
+      setEmailError({ value: true, errorMessage: 'Invalid Email Address format' })
 
-  }
-  if (username === '') {
-    setUsernameError({ value: true, errorMessage: 'You must enter a username' })
-}
-if (password === '') {
-    setPasswordError({ value: true, errorMessage: 'You must enter a password' })
-}
-if (confirmPassword === '') {
-    setConfirmPasswordError({ value: true, errorMessage: 'You must confirm your password' })
-}
-if (confirmPassword !== password) {
-    setPasswordError({ value: true, errorMessage: 'Password does not match confirm password' })
-    setConfirmPasswordError({ value: true, errorMessage: 'Password does not match confirm password' })
-}
-if(name && email && username && password) {
-    const lmsAdmin = { name, email, password, username};
-    try {
-      const response = await axios.post(
+    }
+    if (username === '') {
+      setUsernameError({ value: true, errorMessage: 'You must enter a username' })
+    }
+    if (password === '') {
+      setPasswordError({ value: true, errorMessage: 'You must enter a password' })
+    }
+    if (confirmPassword === '') {
+      setConfirmPasswordError({ value: true, errorMessage: 'You must confirm your password' })
+    }
+    if (confirmPassword !== password) {
+      setPasswordError({ value: true, errorMessage: 'Password does not match confirm password' })
+      setConfirmPasswordError({ value: true, errorMessage: 'Password does not match confirm password' })
+    }
+    else if (name && email && username && password && confirmPassword) {
+      const lmsAdmin = { name, email, password, username };
+      try {
+        const response = await axios.post(
           "http://localhost:8080/lmsadmin/addLmsAdmin", lmsAdmin
         );
         // set the state of the user
         // store the user in localStorage
+        console.log(response)
         const user = response.data
         addToList(user)
-        console.log(user)      
+        console.log(user)
         props.closeModalFunc()
-        
-        
-  } catch (error) {
-      // Handle error here
-      console.log(error.message)
+
+
+      } catch (error) {
+        // Handle error here
+        console.log(error.message)
+        handleClickOpenError();
+      }
+    }
   }
-}
-}
 
 
   const handleCancel = () => {
@@ -110,6 +126,7 @@ if(name && email && username && password) {
             id="outlined-basic"
             label="Name"
             variant="outlined"
+            required
             fullWidth
             style={{ paddingBottom: "10px" }}
             value={name}
@@ -121,6 +138,7 @@ if(name && email && username && password) {
             id="outlined-basic"
             label="Email"
             variant="outlined"
+            required
             fullWidth
             style={{ paddingBottom: "10px" }}
             value={email}
@@ -133,6 +151,7 @@ if(name && email && username && password) {
             id="outlined-basic"
             label="Username"
             variant="outlined"
+            required
             fullWidth
             style={{ paddingBottom: "10px" }}
             value={username}
@@ -140,10 +159,11 @@ if(name && email && username && password) {
             error={usernameError.value}
             helperText={usernameError.errorMessage}
           />
-                    <TextField
+          <TextField
             id="outlined-basic"
             label="Password"
             variant="outlined"
+            required
             fullWidth
             style={{ paddingBottom: "10px" }}
             value={password}
@@ -152,10 +172,11 @@ if(name && email && username && password) {
             helperText={passwordError.errorMessage}
             type="password"
           />
-                 <TextField
+          <TextField
             id="outlined-basic"
             label="Confirm Password"
             variant="outlined"
+            required
             fullWidth
             style={{ paddingBottom: "10px" }}
             value={confirmPassword}
@@ -169,7 +190,7 @@ if(name && email && username && password) {
           <br />
           <Button variant="contained" onClick={handleClick}>
             Submit
-          </Button> 
+          </Button>
           <br></br>
           <br></br>
 
@@ -178,6 +199,19 @@ if(name && email && username && password) {
           </Button>
         </Paper>
       </Container>
+      <div>
+        <Dialog open={openError} onClose={handleCloseError}>
+          <DialogTitle>Error when creating account!</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Username has been taken. Unable to create this account, please use another username.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseError}>Close</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </Box>
   );
 }

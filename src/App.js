@@ -17,6 +17,12 @@ import PendingApprovalReq from './pages/PendingApprovalReq';
 import ApprovedApprovalReq from './pages/ApprovedApprovalReq';
 import RejectedApprovalReq from './pages/RejectedApprovalReq';
 import Tags from './pages/Tags';
+import LearnerTransaction from './pages/LearnerTransaction';
+import OrgBalance from './pages/OrgBalance';
+import LmsTransaction from './pages/LmsTransaction';
+import Refund from './pages/Refund';
+import RefundTransactions from './pages/RefundTransactions';
+import Test from './components/Test';
 
 
 
@@ -115,9 +121,44 @@ function App() {
                 <Appbar />
                 <Tags />
               </RequireAuth>} />
+
+              <Route path="/learnerTransaction" element={
+              <RequireAuth>
+                <Appbar />
+                <LearnerTransaction />
+              </RequireAuth>} />
+
+              <Route path="/OrgBalance" element={
+              <RequireAuth>
+                <Appbar />
+                <OrgBalance />
+              </RequireAuth>} />
+
+              <Route path="/lmsTransaction" element={
+              <RequireAuth>
+                <Appbar />
+                <LmsTransaction />
+              </RequireAuth>} />
+
+              <Route path="/refund" element={
+              <RequireAuth>
+                <Appbar />
+                <Refund />
+              </RequireAuth>} />
+
+              <Route path="/refundTransactions" element={
+              <RequireAuth>
+                <Appbar />
+                <RefundTransactions />
+              </RequireAuth>} />
+
+              <Route path="/dummyPath" element={
+                <Test />
+               } />
           </Routes>
         </Router>
       </AuthProvider>
+      
     </div>
   );
 

@@ -12,10 +12,10 @@ export default function DeleteTransactionDialog(props) {
     const agree = async (e) => {
         e.preventDefault();
         const transactionToDelete =  props.currTransaction
-    
+        console.log(transactionToDelete)
         try {
           const response = await axios.post(
-              "http://localhost:8080/transaction/deleteRefundTransaction", transactionToDelete
+              "http://localhost:8080/transaction/deleteTransaction", transactionToDelete
             );
             // set the state of the user
             props.closeDialog()

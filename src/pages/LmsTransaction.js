@@ -2,7 +2,7 @@ import { Button, Chip, Divider, FormControl, Grid, InputLabel, MenuItem, Select 
 import { DataGrid, gridColumnsTotalWidthSelector } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useState } from "react";
-import DelteTransactionDialog from "../components/DeleteTransactionDialog";
+import DeleteTransactionDialog from "../components/DeleteTransactionDialog";
 import TransactonSideBar from "../components/TransactionSideBar";
 import UpdateTransactionDialog from "../components/UpdateTransactionDialog";
 
@@ -185,12 +185,12 @@ React.useEffect(() => {
       transaction={currTransaction}
       refresh={refreshPage}>
       </UpdateTransactionDialog>
-      <DelteTransactionDialog
+      <DeleteTransactionDialog
       isOpen={openDelete}
       closeDialog={handleCloseDelete}
       currTransaction={currTransaction}
       refresh={refreshPage}>
-      </DelteTransactionDialog>      </div>
+      </DeleteTransactionDialog>      </div>
     )
 }
 

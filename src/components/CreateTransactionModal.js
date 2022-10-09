@@ -14,10 +14,18 @@ import { useState } from "react";
 export default function CreateTransactionModal(props) {
 const currOrg = props.currOrg
   const paperStyle = { padding: "50px 20px", width: 600, margin: "20px auto" };
-  const [payTo, setPayTo] = useState(currOrg.organisationId);
-  const [orgName, setOrgName] = useState(currOrg.organisationName);
-  const [orgAccNumber, setOrgAccNumber] = useState(currOrg.paymentAcc);
-  const [amountPaid, setAmountPaid] = useState(currOrg.orgBalance);
+  const [payTo, setPayTo] = useState("");
+  const [orgName, setOrgName] = useState("");
+  const [orgAccNumber, setOrgAccNumber] = useState("");
+  const [amountPaid, setAmountPaid] = useState("");
+
+ 
+  React.useEffect(() => {
+    setPayTo(currOrg.organisationId);
+    setOrgName(currOrg.organisationName);
+    setOrgAccNumber(currOrg.paymentAcc);
+    setAmountPaid(currOrg.orgBalance)
+  },[currOrg.orgBalance, currOrg.organisationId, currOrg.organisationName, currOrg.paymentAcc, props.learnerId]);
 
   const [amountPaidError, setAmountPaidError] = useState({ value: false, errorMessage: '' })
 
@@ -30,8 +38,16 @@ const currOrg = props.currOrg
     if (amountPaid === '') {
       setAmountPaidError({ value: true, errorMessage: 'You must enter an amount' })
     }
+
+    if (amountPaid === '0') {
+      setAmountPaidError({ value: true, errorMessage: 'You must enter an amount greater than 0' })
+    }
+
+    if (amountPaid > currOrg.orgBalance) {
+      setAmountPaidError({ value: true, errorMessage: 'You must enter an amount less than or equal to the org balance owed' })
+    }
     
-    else if (payTo && orgName && orgAccNumber && amountPaid) {
+    else if (payTo && orgName && orgAccNumber && amountPaid && !(amountPaid === '0') && !(amountPaid > currOrg.orgBalance)) {
       const transaction = { payTo, orgName, orgAccNumber, amountPaid };
       try {
         const response = await axios.post(

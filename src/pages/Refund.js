@@ -1,10 +1,11 @@
 import { CompareSharp } from "@mui/icons-material";
-import { Button, Chip, Divider, Grid, Modal } from "@mui/material";
+import { Box, Button, Chip, Divider, Grid, Modal } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useState } from "react";
 import CreateRefundTransactionModal from "../components/CreateRefundTransactionModal";
 import TransactonSideBar from "../components/TransactionSideBar";
 import ViewLearnerDetailsDialog from "../components/ViewLearnerDetailsDialog";
+import { darken, lighten } from '@mui/material/styles';
 
 const Refund = () => {
   const [refundReqs, setRefundReqs] = useState([]);
@@ -27,6 +28,9 @@ const handleOpen = (event, params) => {
 const handleClose = () => {
   setOpen(false)
 }
+
+const getBackgroundColor = (color, mode) =>
+  mode === 'dark' ? darken(color, 0.6) : lighten(color, 0.6);
 
 const handleModalOpen = (event, params) => {
   setLearnerId(params.row.learnerId)
@@ -103,16 +107,32 @@ React.useEffect(() => {
                           </Grid>
                       <Grid item xs={10}>
                       <h1>View All Refund Requests</h1>
-                      <div style={{ height: 400, width: '100%' }}>
+                      <Box sx={{ height: 400,
+                         width: '100%',
+                         '& .super-app-theme--REQUESTED': {
+                          bgcolor: (theme) =>
+                            getBackgroundColor(theme.palette.info.main, theme.palette.mode),
+                        },
+                        '& .super-app-theme--REFUNDED': {
+                          bgcolor: (theme) =>
+                            getBackgroundColor(theme.palette.success.main, theme.palette.mode),
+                        },
+                        '& .super-app-theme--OVERDUE': {
+                          bgcolor: (theme) =>
+                            getBackgroundColor(theme.palette.error.main, theme.palette.mode),
+                        },
+                          }}>
       <DataGrid getRowId={(row)=>row.timeStamp}
         rows={refundReqs}
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
+        getRowClassName={(params) => `super-app-theme--${params.row.refundStatusEnum}` }
+
 
       
       />
-    </div>
+    </Box>
 
         <br></br>
         <Divider>

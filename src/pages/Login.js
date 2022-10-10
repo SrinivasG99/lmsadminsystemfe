@@ -80,7 +80,7 @@ if(password && username) {
   top={0}
   height="100%"
   width="100%"
-  bgcolor={'#13215f'}
+  bgcolor={'white'}
   >
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="lg">
@@ -95,7 +95,7 @@ if(password && username) {
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           </Avatar>
-          <Typography component="h1" variant="h5" color={"white"}>
+          <Typography component="h1" variant="h5" color={"black"}>
             LMS Admin Portal
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>

@@ -1,4 +1,4 @@
-import { AppBar, Button, Chip, Divider, Grid, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { AppBar, Typography, Button, Chip, Divider, Grid, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideBar from '../components/SideBar';
@@ -54,7 +54,8 @@ React.useEffect(() => {
 
                     </Grid>
                 <Grid item xs={10}>
-                <h1>View All Admins</h1>
+                  <center><Typography variant = "h4">View All Admins</Typography></center>
+                
                 <div>
                 <Button
             className="btn-choose"

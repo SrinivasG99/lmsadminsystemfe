@@ -47,7 +47,7 @@ export default function RewardsPage() {
             <Typography variant="h4" style={{ paddingLeft: '6rem' }}>
               List of Rewards
             </Typography>
-            <div style={{ padding: "5%" }}>
+            <div style={{ paddingLeft: "5%", paddingTop: "2%", paddingRight: "1%" }}>
               <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                   <TableHead>
@@ -55,7 +55,7 @@ export default function RewardsPage() {
                       <TableCell>Image</TableCell>
                       <TableCell>Item Name</TableCell>
                       <TableCell>Item Description</TableCell>
-                      <TableCell>Item Price</TableCell>
+                      <TableCell>Base Item Price</TableCell>
                       <TableCell>Size Available</TableCell>
                     </TableRow>
                   </TableHead>

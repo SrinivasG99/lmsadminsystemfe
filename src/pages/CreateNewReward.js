@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import { useState, useEffect } from 'react';
-import { Button, Typography, TextField, Switch, ThemeProvider, createTheme, LinearProgress, Box, InputAdornment, Stack } from '@mui/material';
+import { Button, Typography, TextField, Switch, ThemeProvider, Tooltip, createTheme, LinearProgress, Box, InputAdornment, Stack } from '@mui/material';
 import RewardsDrawer from '../components/RewardsDrawer';
 import UploadFilesService from '../services/UploadFilesService';
 import { ToastContainer, toast } from 'react-toastify';
@@ -151,7 +151,7 @@ export default function CreateNewReward() {
 
             navigate('/rewardsPage');
 
-            
+
 
         }).catch((err) => {
             toast.error(JSON.stringify(err.message));
@@ -175,7 +175,7 @@ export default function CreateNewReward() {
                             Create New Reward Item
                         </Typography>
                         <br />
-                        <div style={{ paddingLeft: "8em" }}>
+                        <div style={{ paddingLeft: "8em"}}>
                             <TextField
                                 label="Item name"
                                 variant="outlined"
@@ -195,19 +195,21 @@ export default function CreateNewReward() {
                                 onChange={(e) => setItemDescription(e.target.value)}
 
                             />
-
                             <TextField
-                                label="Item Price"
+                                label="Base Item Price"
                                 variant="outlined"
                                 fullWidth
-                                style={{ paddingBottom: "10px" }}
                                 value={itemPrice}
+                                style = {{marginBottom: "5px"}}
                                 onChange={(e) => setItemPrice(e.target.value)}
                                 InputProps={{
                                     endAdornment: <InputAdornment position="end">Tree Points</InputAdornment>,
                                 }}
 
                             />
+                            <Typography style = {{marginBottom: "10px"}}>*For every increase in size, the price is going to be increased by a flat 10 tree points.</Typography>
+
+
                             <Stack direction="row" spacing={8}>
 
                                 <div>

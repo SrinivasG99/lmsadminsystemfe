@@ -89,7 +89,7 @@ export default function Appbar() {
             component="div"
             style={{ marginLeft: "40px", fontWeight: "1000px" }}
           >
-            EduCouch 
+            EduCouch
           </Typography>
           <div style={{ marginLeft: "auto" }}>
             <Box sx={{ flexGrow: 0 }}>
@@ -152,12 +152,12 @@ export default function Appbar() {
             <ul className={'nav-menu'}>
               <li className='nav-item'>
                 <Link to='/LmsAdminManagement' className='nav-links'>
-                  Lms Admin Management
+                  LMS Management
                 </Link>
               </li>
               <li className='nav-item'>
                 <Link to='/PendingApprovalReq' className='nav-links'>
-                  Organisation Admin Approval Management
+                  Organization Management
                 </Link>
               </li>
 
@@ -172,6 +172,13 @@ export default function Appbar() {
                   Transactions
                 </Link>
               </li>
+
+              <li className='nav-item'>
+                <Link to='/rewardsPage' className='nav-links'>
+                  Rewards
+                </Link>
+              </li>
+
 
             </ul>
 

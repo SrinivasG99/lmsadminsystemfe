@@ -23,6 +23,8 @@ import LmsTransaction from './pages/LmsTransaction';
 import Refund from './pages/Refund';
 import RefundTransactions from './pages/RefundTransactions';
 import Test from './components/Test';
+import RewardsPage from './pages/RewardPage';
+import CreateNewReward from './pages/CreateNewReward';
 
 
 
@@ -66,6 +68,18 @@ function App() {
               <RequireAuth>
                 <Appbar />
                 <TeachingCoursesList />
+              </RequireAuth>} />
+
+              <Route path="/rewardsPage" element={
+              <RequireAuth>
+                <Appbar />
+                <RewardsPage/>
+              </RequireAuth>} />
+
+              <Route path="/createNewReward" element={
+              <RequireAuth>
+                <Appbar />
+                <CreateNewReward/>
               </RequireAuth>} />
 
             <Route path="/myTeachingCourse/:courseId" element={

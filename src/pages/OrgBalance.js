@@ -26,44 +26,42 @@ const handleClose = () => {
   setOpen(false)
 }
 
-const getBackgroundColor = (color, mode) =>
-  mode === 'dark' ? darken(color, 0.6) : lighten(color, 0.6);
 
 const columns = [
-  { field: 'organisationId', headerName: 'Organisation ID', width: 250},
-  { field: 'organisationName', headerName: 'Name', width: 250},
-  { field: 'paymentAcc', headerName: 'Org Account Number', width: 250},
+  { field: 'organisationId', headerName: 'Organisation ID', width: 400},
+  { field: 'organisationName', headerName: 'Name', width: 400},
+  { field: 'paymentAcc', headerName: 'Org Account Number', width: 400},
   {
     field: 'orgBalance',
-    headerName: 'Balance Owed',
-    width: 250
+    headerName: 'Running Sum Of Balance Owed',
+    width: 400
   },
-  {
-  field: 'paymentStatus',
-  headerName: 'Payment Status',
-  width: 250
-},
-  {
-    headerName: "Action",
-    width: 500,
-    renderCell: (params) => {
-      return (
-        <div>
-          <Button
-            variant="contained"
-            size="small"
-            tabIndex={params.hasFocus ? 0 : -1}
-            onClick={(event) => {
-              handleOpen(event, params);
-            }}
-          >
-            Create Transaction
-          </Button>
-         </div>
+//   {
+//   field: 'paymentStatus',
+//   headerName: 'Payment Status',
+//   width: 250
+// },
+  // {
+  //   headerName: "Action",
+  //   width: 500,
+  //   renderCell: (params) => {
+  //     return (
+  //       <div>
+  //         <Button
+  //           variant="contained"
+  //           size="small"
+  //           tabIndex={params.hasFocus ? 0 : -1}
+  //           onClick={(event) => {
+  //             handleOpen(event, params);
+  //           }}
+  //         >
+  //           Create Transaction
+  //         </Button>
+  //        </div>
        
-      );
-    },
-  },
+  //     );
+  //   },
+  // },
 ];
 React.useEffect(() => {
   fetch("http://localhost:8080/educator/findAllOrganisation")
@@ -84,31 +82,14 @@ React.useEffect(() => {
                           </Grid>
                       <Grid item xs={10}>
                       <h1>View All Organisation Balance</h1>
-                      <Box sx={{ 
-                        height: 400, 
-                        width: '100%',
-                        '& .super-app-theme--DUE': {
-                          bgcolor: (theme) =>
-                            getBackgroundColor(theme.palette.info.main, theme.palette.mode),
-                        },
-                        '& .super-app-theme--PAID': {
-                          bgcolor: (theme) =>
-                            getBackgroundColor(theme.palette.success.main, theme.palette.mode),
-                        },
-                        '& .super-app-theme--OVERDUE': {
-                          bgcolor: (theme) =>
-                            getBackgroundColor(theme.palette.error.main, theme.palette.mode),
-                        },
-                         }}>
-      <DataGrid getRowId={(row)=>row.organisationId}
+                      <div style={{ height: 400, width: '100%' }}>      
+                      <DataGrid getRowId={(row)=>row.organisationId}
         rows={organisations}
         columns={columns}
         pageSize={5}
-        rowsPerPageOptions={[5]}
-        getRowClassName={(params) => `super-app-theme--${params.row.paymentStatus}` }
-      
+        rowsPerPageOptions={[5]}      
       />
-    </Box>
+    </div>
 
         <br></br>
         <Divider>

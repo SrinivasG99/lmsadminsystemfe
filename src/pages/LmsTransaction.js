@@ -68,6 +68,36 @@ const handleDownload= async (event) => {
 }
 }
 
+const handleDownloadOrgReport= async (event,params) => {
+  event.preventDefault();
+
+  try {
+    const response = await axios.get(
+        `http://localhost:8080/downloadFileFromName/${params.row.fileStorageName}`, {
+          responseType: 'arraybuffer'
+      }
+      );
+      const file = new Blob([(response.data)], {type: "application/pdf"})
+      const element = document.createElement('a');
+      element.href = window.URL.createObjectURL(file, {type: "application/pdf"})
+      element.download = params.row.fileStorageName + ".pdf"
+
+
+  // Append to html link element page
+  document.body.appendChild(element);
+
+  // Start download
+  element.click();
+
+  // Clean up and remove the link
+  element.parentNode.removeChild(element);
+
+} catch (error) {
+    // Handle error here
+    console.log(error.message)
+}
+}
+
 const columns = [
   { field: 'transactionId', headerName: 'LMS Transaction ID', width: 300},
   { field: 'paymentTime', headerName: 'Timestamp', width: 200},
@@ -88,7 +118,7 @@ const columns = [
     renderCell: (params) => {
       return (
         <div>
-          <Button
+          {/* <Button
             variant="contained"
             size="small"
             tabIndex={params.hasFocus ? 0 : -1}
@@ -108,6 +138,16 @@ const columns = [
             }}
           >
             Delete Transaction
+          </Button> */}
+          <Button
+            variant="contained"
+            size="small"
+            tabIndex={params.hasFocus ? 0 : -1}
+            onClick={(event) => {
+              handleDownloadOrgReport(event, params);
+            }}
+          >
+            Download Invoice
           </Button>
          </div>
        

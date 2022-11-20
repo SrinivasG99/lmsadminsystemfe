@@ -54,6 +54,7 @@ export default function PendingReelApprovals() {
             >
               <ViewReel
                 closeModalFunc={handleClose}
+                refreshFunc={triggerRefresh}
                 reel={currReq}
                 // reelId={reelId}
               ></ViewReel>
@@ -64,6 +65,9 @@ export default function PendingReelApprovals() {
     },
   ];
   const [refreshArr, setRefreshArr] = useState(true);
+  function triggerRefresh() {
+    setRefreshArr(!refreshArr)
+  }
 
   React.useEffect(() => {
     fetch("http://localhost:8080/reel/getAllPendingReels")

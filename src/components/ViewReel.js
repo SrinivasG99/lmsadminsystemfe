@@ -19,6 +19,7 @@ export default function ViewReel(props) {
   const [reelNumViews, setReelNumViews] = useState(0);
   const [reelCaption, setReelCaption] = useState("");
   const [video, setVideo] = useState();
+  const [videoUrl, setVideoUrl] = useState();
   const [creatorName, setCreatorName] = useState();
   const [status, setStatus] = useState();
 
@@ -32,6 +33,8 @@ export default function ViewReel(props) {
     setVideo(props.reel.video);
     setCreatorName(props.reel.creatorName);
     setStatus(props.reel.reelApprovalStatusEnum);
+    setVideoUrl(props.reel.video.fileURL);
+    console.log("fileUrl: ", props.reel.video.fileURL);
   }, []);
   const renderVideoImageHolder = () => {
     return (
@@ -43,7 +46,7 @@ export default function ViewReel(props) {
               width="100%"
               height="100%"
               controls
-              url={video.fileURL}
+              url={videoUrl}
             />
           </div>
         ) : (
@@ -58,9 +61,11 @@ export default function ViewReel(props) {
   function handleRejectReel() {
     fetch("http://localhost:8080/reel/rejectReel/" + reelId, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify("")
     }).then(() => {
       console.log("Reel Rejected Successfully!");
+      props.refreshFunc();
       props.closeModalFunc();
     });
   }
@@ -71,6 +76,7 @@ export default function ViewReel(props) {
       headers: { "Content-Type": "application/json" },
     }).then(() => {
       console.log("Reel Approved Successfully!");
+      props.refreshFunc();
       props.closeModalFunc();
     });
   }
@@ -143,8 +149,7 @@ export default function ViewReel(props) {
                   }}
                   className="cards-item-text"
                 >
-                  <FavoriteIcon style={{ color: "red" }} /> {reelNumLikes}
-                  likes
+                  <FavoriteIcon style={{ color: "red" }} /> {reelNumLikes} likes
                 </p>
                 <p
                   style={{

@@ -1,4 +1,12 @@
-import { Breadcrumbs, Button, Divider, Grid, Link, Paper } from "@mui/material";
+import {
+  Breadcrumbs,
+  Button,
+  Divider,
+  Grid,
+  Link,
+  Paper,
+  TextField,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -22,6 +30,7 @@ export default function ViewReel(props) {
   const [videoUrl, setVideoUrl] = useState();
   const [creatorName, setCreatorName] = useState();
   const [status, setStatus] = useState();
+  const [rejectionReason, setRejectionReason] = useState(" ");
 
   React.useEffect(() => {
     console.log("view reel, received: ", props.reel);
@@ -59,10 +68,11 @@ export default function ViewReel(props) {
   };
 
   function handleRejectReel() {
+    console.log("rejectionReason: ", rejectionReason);
     fetch("http://localhost:8080/reel/rejectReel/" + reelId, {
       method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify("")
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(rejectionReason),
     }).then(() => {
       console.log("Reel Rejected Successfully!");
       props.refreshFunc();
@@ -177,13 +187,15 @@ export default function ViewReel(props) {
               </Grid>
               <Grid container justifyContent={"space-between"} padding={"20px"}>
                 {status != "REJECTED" && (
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleRejectReel}
-                  >
-                    reject
-                  </Button>
+                  <>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={handleRejectReel}
+                    >
+                      reject
+                    </Button>
+                  </>
                 )}
                 {status != "LIVE" && (
                   <Button
@@ -195,6 +207,16 @@ export default function ViewReel(props) {
                   </Button>
                 )}
               </Grid>
+              <TextField
+                style={{ marginLeft: "20px", width: "400px" }}
+                multiline
+                type="text"
+                placeholder="Type rejection reason here... (if applicable)"
+                value={rejectionReason}
+                onChange={(e) =>
+                  setRejectionReason(e.target.value)
+                }
+              ></TextField>
             </Paper>
           </Grid>
         </Grid>

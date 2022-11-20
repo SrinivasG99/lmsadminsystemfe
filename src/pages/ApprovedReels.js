@@ -12,7 +12,7 @@ export default function ApprovedReels() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = (event, param) => {
     setCurrReq(param.row);
-    console.log("handleOpen, param.row: ", param)
+    console.log("handleOpen, param.row: ", param);
     setOpen(true);
   };
   function handleClose(ed) {
@@ -54,6 +54,7 @@ export default function ApprovedReels() {
             >
               <ViewReel
                 closeModalFunc={handleClose}
+                refreshFunc={triggerRefresh}
                 reel={currReq}
                 // reelId={reelId}
               ></ViewReel>
@@ -64,7 +65,9 @@ export default function ApprovedReels() {
     },
   ];
   const [refreshArr, setRefreshArr] = useState(true);
-
+  function triggerRefresh() {
+    setRefreshArr(!refreshArr);
+  }
   React.useEffect(() => {
     fetch("http://localhost:8080/reel/getAllApprovedReels")
       .then((res) => res.json())

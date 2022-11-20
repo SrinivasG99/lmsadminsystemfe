@@ -27,6 +27,9 @@ import RewardsPage from "./pages/RewardPage";
 import CreateNewReward from "./pages/CreateNewReward";
 import PendingRequestsList from "./components/PendingRequestsList";
 import ResolvedRequestsList from "./components/ResolvedRequestsList";
+import PendingReelApprovals from "./pages/PendingReelApprovals";
+import ApprovedReels from "./pages/ApprovedReels";
+import RejectedReels from "./pages/RejectedReels";
 
 function App() {
   return (
@@ -243,6 +246,36 @@ function App() {
                 <RequireAuth>
                   <Appbar />
                   <RefundTransactions />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/pendingReelApprovals"
+              element={
+                <RequireAuth>
+                  <Appbar />
+                  <PendingReelApprovals />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/approvedReels"
+              element={
+                <RequireAuth>
+                  <Appbar />
+                  <ApprovedReels />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/rejectedReels"
+              element={
+                <RequireAuth>
+                  <Appbar />
+                  <RejectedReels />
                 </RequireAuth>
               }
             />

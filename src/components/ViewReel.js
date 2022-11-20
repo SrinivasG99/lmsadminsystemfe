@@ -20,6 +20,7 @@ export default function ViewReel(props) {
   const [reelCaption, setReelCaption] = useState("");
   const [video, setVideo] = useState();
   const [creatorName, setCreatorName] = useState();
+  const [status, setStatus] = useState();
 
   React.useEffect(() => {
     console.log("view reel, received: ", props.reel);
@@ -30,6 +31,7 @@ export default function ViewReel(props) {
     setReelNumViews(props.reel.numViews);
     setVideo(props.reel.video);
     setCreatorName(props.reel.creatorName);
+    setStatus(props.reel.reelApprovalStatusEnum);
   }, []);
   const renderVideoImageHolder = () => {
     return (
@@ -68,8 +70,8 @@ export default function ViewReel(props) {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
     }).then(() => {
-    console.log("Reel Approved Successfully!");
-    props.closeModalFunc();
+      console.log("Reel Approved Successfully!");
+      props.closeModalFunc();
     });
   }
 
@@ -86,6 +88,14 @@ export default function ViewReel(props) {
             alignItems: "center",
           }}
         >
+          <Button
+            variant="contained"
+            color="inherit"
+            onClick={() => props.closeModalFunc()}
+            style={{ marginLeft: "-610px", marginBottom: "10px" }}
+          >
+            Back
+          </Button>
           <h1
             style={{
               backgroundImage: "linear-gradient(to right, #FF8300, #A3C4BC)",
@@ -161,20 +171,24 @@ export default function ViewReel(props) {
                 <Divider style={{ marginTop: "30px" }}></Divider>
               </Grid>
               <Grid container justifyContent={"space-between"} padding={"20px"}>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={handleRejectReel}
-                >
-                  reject
-                </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleApproveReel}
-                >
-                  approve
-                </Button>
+                {status != "REJECTED" && (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleRejectReel}
+                  >
+                    reject
+                  </Button>
+                )}
+                {status != "LIVE" && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleApproveReel}
+                  >
+                    approve
+                  </Button>
+                )}
               </Grid>
             </Paper>
           </Grid>

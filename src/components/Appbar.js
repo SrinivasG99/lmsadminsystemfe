@@ -174,6 +174,12 @@ export default function Appbar() {
               </li>
 
               <li className='nav-item'>
+                <Link to='/pendingReelApprovals' className='nav-links'>
+                  Reels
+                </Link>
+              </li>
+
+              <li className='nav-item'>
                 <Link to='/rewardsPage' className='nav-links'>
                   Rewards
                 </Link>

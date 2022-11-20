@@ -25,6 +25,9 @@ import RefundTransactions from './pages/RefundTransactions';
 import Test from './components/Test';
 import RewardsPage from './pages/RewardPage';
 import CreateNewReward from './pages/CreateNewReward';
+import PendingReelApprovals from './pages/PendingReelApprovals';
+import ApprovedReels from './pages/ApprovedReels';
+import RejectedReels from './pages/RejectedReels';
 
 
 
@@ -164,6 +167,24 @@ function App() {
               <RequireAuth>
                 <Appbar />
                 <RefundTransactions />
+              </RequireAuth>} />
+            
+              <Route path="/pendingReelApprovals" element={
+              <RequireAuth>
+                <Appbar />
+                <PendingReelApprovals />
+              </RequireAuth>} />
+            
+              <Route path="/approvedReels" element={
+              <RequireAuth>
+                <Appbar />
+                <ApprovedReels/>
+              </RequireAuth>} />
+            
+              <Route path="/rejectedReels" element={
+              <RequireAuth>
+                <Appbar />
+                <RejectedReels />
               </RequireAuth>} />
 
               <Route path="/dummyPath" element={

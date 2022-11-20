@@ -72,7 +72,7 @@ export default function ViewReel(props) {
     fetch("http://localhost:8080/reel/rejectReel/" + reelId, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(rejectionReason),
+      body: rejectionReason,
     }).then(() => {
       console.log("Reel Rejected Successfully!");
       props.refreshFunc();

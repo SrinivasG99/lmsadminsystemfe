@@ -1,6 +1,10 @@
 import { Button, Dialog, Grid, Paper } from "@mui/material";
 
 export default function ViewRequestDetailsDialog(props) {
+  const openInNewTab = (url) => {
+    const newWindow = window.open(url, "_blank", "noopener,noreferrer");
+    if (newWindow) newWindow.opener = null;
+  };
   return (
     <div>
       <Dialog open={props.open} onClose={props.onClose}>
@@ -17,7 +21,21 @@ export default function ViewRequestDetailsDialog(props) {
           >
             <b>Request Description:</b> {props.currReq.requestDescription}
             <br />
-            <b>Submitted Attachments: </b>
+            {props.currReq.imageUrl && (
+              <b>
+                Submitted Screenshots:
+                <img
+                  src={props.currReq.imageUrl}
+                  alt="Request image"
+                  width="100px"
+                  height="100px"
+                  objectFit="contain"
+                  onClick={() => {
+                    openInNewTab(props.currReq.imageUrl);
+                  }}
+                ></img>
+              </b>
+            )}
             <br />
           </Paper>
         </Paper>

@@ -1,7 +1,11 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import { useState, useEffect } from 'react';
-import { Button, Typography, TextField, Switch, ThemeProvider, Tooltip, createTheme, LinearProgress, Box, InputAdornment, Stack } from '@mui/material';
+import {
+    Button, Typography, TextField, Switch,
+    ThemeProvider, Tooltip, createTheme, LinearProgress,
+    Box, InputAdornment, Stack, Select, MenuItem, InputLabel
+} from '@mui/material';
 import RewardsDrawer from '../components/RewardsDrawer';
 import UploadFilesService from '../services/UploadFilesService';
 import { ToastContainer, toast } from 'react-toastify';
@@ -33,12 +37,19 @@ export default function CreateNewReward() {
     const navigate = useNavigate();
 
     const [itemPrice, setItemPrice] = useState(0);
-    const [smallAvailable, setSmallAvailable] = useState(false);
+
     const [mediumAvailable, setMediumAvailable] = useState(false);
     const [largeAvailable, setLargeAvailable] = useState(false);
     const [itemName, setItemName] = useState("");
     const [itemDescription, setItemDescription] = useState("");
     const [imageUrl, setImageUrl] = useState("");
+
+    // enhancement
+
+    const [mediumPointThreshold, setMediumPointThreshold] = useState(0);
+    const [largePointThreshold, setLargePointThreshold] = useState(0);
+
+    const [itemType, setItemType] = useState("");
 
     // image upload
     const [currentFile, setCurrentFile] = useState(undefined);
@@ -47,10 +58,8 @@ export default function CreateNewReward() {
     );
     const [progress, setProgress] = useState(0);
 
+
     // handle change
-    function handleSmallChange() {
-        setSmallAvailable(!smallAvailable);
-    }
 
     function handleMediumChange() {
         setMediumAvailable(!mediumAvailable);
@@ -68,8 +77,8 @@ export default function CreateNewReward() {
         setCurrentFile(event.target.files[0]);
         setPreviewImage(URL.createObjectURL(event.target.files[0]));
         setProgress(0);
-        setNotifMessage("");
     };
+
 
     const uploadImage = () => {
 
@@ -94,6 +103,8 @@ export default function CreateNewReward() {
 
     };
 
+
+
     const handleSubmitItem = () => {
         var error = false;
 
@@ -103,10 +114,6 @@ export default function CreateNewReward() {
         }
         if (imageUrl == "") {
             toast.warn("An image has to be uploaded!");
-            error = true;
-        }
-        if (!smallAvailable && !mediumAvailable && !largeAvailable) {
-            toast.warn("At least one item size has to be available.");
             error = true;
         }
 
@@ -120,6 +127,21 @@ export default function CreateNewReward() {
             error = true;
         }
 
+        if (itemType === "") {
+            toast.warn("Item type has to be specified!");
+            error = true;
+        }
+
+        if(largeAvailable) {
+            if (largePointThreshold <= mediumPointThreshold) {
+                toast.warn("Large threshold must be greater than medium threshold!");
+                error = true;
+            }
+
+        }
+
+        
+
         if (error) {
             return;
         }
@@ -127,9 +149,11 @@ export default function CreateNewReward() {
         const newItem = {
             price: itemPrice,
             imageUrl: imageUrl,
-            smallAvailable: smallAvailable,
+            itemTypeEnum: itemType,
             mediumAvailable: mediumAvailable,
+            mediumPointThreshold: mediumPointThreshold,
             largeAvailable: largeAvailable,
+            largePointThreshold: largePointThreshold,
             itemName: itemName,
             itemDescription: itemDescription
         };
@@ -140,14 +164,6 @@ export default function CreateNewReward() {
             body: JSON.stringify(newItem)
         }).then(() => {
             toast.success("Item has been successfully created!");
-            setImageUrl("");
-            setItemPrice("");
-            setImageUrl("");
-            setSmallAvailable(false);
-            setMediumAvailable(false);
-            setLargeAvailable(false);
-            setItemDescription("");
-            setItemName("");
 
             navigate('/rewardsPage');
 
@@ -175,7 +191,7 @@ export default function CreateNewReward() {
                             Create New Reward Item
                         </Typography>
                         <br />
-                        <div style={{ paddingLeft: "8em"}}>
+                        <div style={{ paddingLeft: "8em" }}>
                             <TextField
                                 label="Item name"
                                 variant="outlined"
@@ -200,27 +216,83 @@ export default function CreateNewReward() {
                                 variant="outlined"
                                 fullWidth
                                 value={itemPrice}
-                                style = {{marginBottom: "5px"}}
+                                style={{ marginBottom: "5px" }}
                                 onChange={(e) => setItemPrice(e.target.value)}
                                 InputProps={{
                                     endAdornment: <InputAdornment position="end">Tree Points</InputAdornment>,
                                 }}
 
                             />
-                            <Typography style = {{marginBottom: "10px"}}>*For every increase in size, the price is going to be increased by a flat 10 tree points.</Typography>
+                            <br />
+                            <br />
+                            <InputLabel style={{ marginBottom: "5px" }}>Item type</InputLabel>
+                            <Select
+                                label="Item type"
+                                id="demo-simple-select"
+                                value={itemType}
+                                fullWidth
+                                onChange={(event) => setItemType(event.target.value)}
+                            >
+                                <MenuItem value={0}>Building</MenuItem>
+                                <MenuItem value={1}>Plant</MenuItem>
+                                <MenuItem value={2}>Others</MenuItem>
+                            </Select>
+                            <br />
+                            <div id="small-image-upload">
+                                {previewImage && (
+                                    <div>
+                                        <center>
+                                            <img
+                                                className="preview my20"
+                                                src={previewImage}
+                                                alt=""
+                                                style={{ height: "200px", width: "200px", marginTop: "5px" }}
+                                            />
+                                        </center>
 
-
-                            <Stack direction="row" spacing={8}>
-
-                                <div>
-                                    <br />
-                                    <Typography style={{ color: "grey" }}>Available in small size</Typography>
-                                    <Switch
-                                        onChange={handleSmallChange}
-                                        inputProps={{ 'aria-label': 'controlled' }}
-                                        name="Available in small size"
+                                    </div>
+                                )}
+                                {currentFile && (
+                                    <Box className="my20" display="flex" alignItems="center">
+                                        <Box width="100%" mr={1}>
+                                            <ThemeProvider theme={theme}>
+                                                <LinearProgress variant="determinate" value={progress} />
+                                            </ThemeProvider>
+                                        </Box>
+                                        <Box minWidth={35}>
+                                            <Typography
+                                                variant="body2"
+                                                color="textSecondary"
+                                            >{`${progress}%`}</Typography>
+                                        </Box>
+                                    </Box>
+                                )}
+                                <label htmlFor="btn-upload">
+                                    <input
+                                        id="btn-upload"
+                                        name="btn-upload"
+                                        style={{ display: "none" }}
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={selectFile}
                                     />
-                                </div>
+                                    <Button className="btn-choose" variant="outlined" component="span">
+                                        Choose Item Image
+                                    </Button>
+                                </label>
+                                <Button
+                                    className="btn-upload"
+                                    color="primary"
+                                    variant="contained"
+                                    component="span"
+                                    disabled={!currentFile}
+                                    onClick={uploadImage}
+                                >
+                                    Upload
+                                </Button>
+
+                            </div>
+                            {itemType !== 2 &&
                                 <div>
                                     <br />
                                     <Typography style={{ color: "grey" }}>Available in medium size</Typography>
@@ -230,6 +302,26 @@ export default function CreateNewReward() {
                                         name="Available in medium size"
                                     />
                                 </div>
+                            }
+
+                            {mediumAvailable === true &&
+                                <div id="medium-image-upload">
+                                    <TextField
+                                        label="Minimum point for item upgrade to medium"
+                                        variant="outlined"
+                                        fullWidth
+                                        value={mediumPointThreshold}
+                                        style={{ marginBottom: "5px", marginTop: "5px" }}
+                                        onChange={(e) => setMediumPointThreshold(e.target.value)}
+                                        InputProps={{
+                                            endAdornment: <InputAdornment position="end">Item Points</InputAdornment>,
+                                        }}
+
+                                    />
+
+                                </div>
+                            }
+                            {mediumAvailable &&
                                 <div>
                                     <br />
                                     <Typography style={{ color: "grey" }}>Available in large size</Typography>
@@ -239,60 +331,30 @@ export default function CreateNewReward() {
                                         name="Available in large size"
                                     />
                                 </div>
-                            </Stack>
-                            <br />
+                            }
 
-                            {previewImage && (
-                                <div>
-                                    <center>
-                                        <img
-                                            className="preview my20"
-                                            src={previewImage}
-                                            alt=""
-                                            style={{ height: "200px", width: "200px" }}
-                                        />
-                                    </center>
+                            {mediumAvailable === true && largeAvailable === true &&
+                                <div id="large-image-upload">
+                                    <TextField
+                                        label="Minimum point for item upgrade to large"
+                                        variant="outlined"
+                                        fullWidth
+                                        value={largePointThreshold}
+                                        style={{ marginBottom: "5px", marginTop: "5px"  }}
+                                        onChange={(e) => setLargePointThreshold(e.target.value)}
+                                        InputProps={{
+                                            endAdornment: <InputAdornment position="end">Item Points</InputAdornment>,
+                                        }}
+
+                                    />
 
                                 </div>
-                            )}
-                            {currentFile && (
-                                <Box className="my20" display="flex" alignItems="center">
-                                    <Box width="100%" mr={1}>
-                                        <ThemeProvider theme={theme}>
-                                            <LinearProgress variant="determinate" value={progress} />
-                                        </ThemeProvider>
-                                    </Box>
-                                    <Box minWidth={35}>
-                                        <Typography
-                                            variant="body2"
-                                            color="textSecondary"
-                                        >{`${progress}%`}</Typography>
-                                    </Box>
-                                </Box>
-                            )}
-                            <label htmlFor="btn-upload">
-                                <input
-                                    id="btn-upload"
-                                    name="btn-upload"
-                                    style={{ display: "none" }}
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={selectFile}
-                                />
-                                <Button className="btn-choose" variant="outlined" component="span">
-                                    Choose Item Image
-                                </Button>
-                            </label>
-                            <Button
-                                className="btn-upload"
-                                color="primary"
-                                variant="contained"
-                                component="span"
-                                disabled={!currentFile}
-                                onClick={uploadImage}
-                            >
-                                Upload
-                            </Button>
+
+                            }
+
+
+
+
 
                             <br />
                             <br />

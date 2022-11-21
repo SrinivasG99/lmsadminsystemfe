@@ -25,6 +25,8 @@ import RefundTransactions from './pages/RefundTransactions';
 import Test from './components/Test';
 import RewardsPage from './pages/RewardPage';
 import CreateNewReward from './pages/CreateNewReward';
+import ListOfEnhancement from './pages/ListOfEnhancementItem';
+import CreateNewEnhancementItem from './pages/CreateNewEnhancementItem';
 
 
 
@@ -164,6 +166,18 @@ function App() {
               <RequireAuth>
                 <Appbar />
                 <RefundTransactions />
+              </RequireAuth>} />
+
+              <Route path="/listOfEnhancementItems" element={
+              <RequireAuth>
+                <Appbar />
+                <ListOfEnhancement />
+              </RequireAuth>} />
+
+              <Route path="/createNewEnhancement" element={
+              <RequireAuth>
+                <Appbar />
+                <CreateNewEnhancementItem/>
               </RequireAuth>} />
 
               <Route path="/dummyPath" element={

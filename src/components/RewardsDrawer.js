@@ -13,6 +13,8 @@ import LaptopChromebookIcon from '@mui/icons-material/LaptopChromebook';
 import StyleIcon from '@mui/icons-material/Style';
 import ForestIcon from '@mui/icons-material/Forest';
 import CollectionsIcon from '@mui/icons-material/Collections';
+import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 
 
 import '../css/DrawerLeft.css';
@@ -23,7 +25,7 @@ function RewardsDrawer(props) {
     <div>
       <div className='drawerContainer'>
         <List>
-          {['List of Items'].map((text, index) => (
+          {['Reward Items'].map((text, index) => (
             <ListItem key={text} disablePadding>
               <ListItemButton component={Link} to="/rewardsPage">
                 <ListItemIcon>
@@ -47,7 +49,33 @@ function RewardsDrawer(props) {
             </ListItem>
           ))}
         </List>
-
+        <Divider />
+        <List>
+          {['Enhancement Items'].map((text, index) => (
+            <ListItem key={text} disablePadding>
+              <ListItemButton component={Link} to="/listOfEnhancementItems">
+                <ListItemIcon>
+                  <AutoFixNormalIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+        <Divider />
+        <List>
+          {['Create New Enhancement'].map((text, index) => (
+            <ListItem key={text} disablePadding>
+              <ListItemButton component={Link} to="/createNewEnhancement">
+                <ListItemIcon>
+                  <AutoGraphIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+        
       </div>
     </div>
   );

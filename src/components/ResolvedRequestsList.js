@@ -1,116 +1,104 @@
 import * as React from "react";
 import Grid from "@mui/material/Grid";
 import { useState, useEffect } from "react";
-import {
-  Button,
-  Typography,
-  TableRow,
-  TableCell,
-  TableContainer,
-  Paper,
-  TableHead,
-  TableBody,
-  Table,
-  List,
-  ListItem,
-} from "@mui/material";
-import { ToastContainer, toast } from "react-toastify";
+import { Button, Modal, Chip, Divider } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import "react-toastify/dist/ReactToastify.css";
 import TechnicalSupportRequestsDrawer from "./TechnicalSupportRequestsDrawer";
+import ViewRequestDetailsDialog from "./ViewRequestDetailsDialog";
 
 export default function ResolvedRequestsList() {
-  // const [currPage, setCurrPage] = useState("course");
-  // function handleChange(newCurrPage) {
-  //   setCurrPage(newCurrPage);
-  // }
+  const [resolvedRequests, setResolvedRequests] = useState([]);
+  const [currReq, setCurrReq] = useState("");
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = (event, params) => {
+    setCurrReq(params.row);
+    setOpen(true);
+    console.log(currReq);
+  };
+  function handleClose() {
+    setOpen(false);
+  }
+  const columns = [
+    { field: "requestId", headerName: "Request Id", width: 100 },
+    { field: "requestTitle", headerName: "Request Title", width: 200 },
+    {
+      field: "createdByUserType",
+      headerName: "User Type",
+      width: 150,
+    },
+    {
+      field: "createdByUserName",
+      headerName: "Username",
+      width: 150,
+    },
+    {
+      field: "createdDateTime",
+      headerName: "Created on",
+      width: 300,
+    },
+    {
+      headerName: "Action",
+      width: 500,
+      renderCell: (params) => {
+        return (
+          <div>
+            <Button
+              variant="contained"
+              size="small"
+              tabIndex={params.hasFocus ? 0 : -1}
+              onClick={(event) => {
+                handleClickOpen(event, params);
+              }}
+            >
+              View more details
+            </Button>
+          </div>
+        );
+      },
+    },
+  ];
 
-  const [listOfItems, setListOfItems] = useState([]);
-
-  useEffect(() => {
-    fetch("http://localhost:8080/treePoints/getAllItems")
+  React.useEffect(() => {
+    fetch(
+      "http://localhost:8080/technicalSupportRequest/getAllResolvedTechnicalSupportRequests"
+    )
       .then((res) => res.json())
       .then((result) => {
-        setListOfItems(result);
+        setResolvedRequests(result);
       });
   }, []);
 
-  const renderEmptyRowMessage = () => {
-    if (listOfItems.length === 0) {
-      return (
-        <TableRow>
-          <TableCell colSpan={4} style={{ textAlign: "center" }}>
-            There are currently no resolved requests!
-          </TableCell>
-        </TableRow>
-      );
-    }
-  };
-
   return (
-    <>
-      <ToastContainer></ToastContainer>
-      <div>
-        <Grid container>
-          <Grid item xs={1}>
-            <TechnicalSupportRequestsDrawer></TechnicalSupportRequestsDrawer>
-          </Grid>
-          <Grid item xs={11}>
-            <Typography variant="h4" style={{ paddingLeft: "6rem" }}>
-              List of Resolved Requests
-            </Typography>
-            <div
-              style={{
-                paddingLeft: "5%",
-                paddingTop: "2%",
-                paddingRight: "1%",
-              }}
-            >
-              <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Request Title</TableCell>
-                      <TableCell>Request Description</TableCell>
-                      <TableCell>Submitted by</TableCell>
-                      <TableCell>Submitted on</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {renderEmptyRowMessage()}
-                    {/* {listOfItems.map((item) => (
-                      <TableRow
-                        key={item.itemId}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {item.itemName}
-                        </TableCell>
-                        <TableCell>
-                          {item.itemDescription.slice(0, 100) + "..."}
-                        </TableCell>
-                        <TableCell>
-                          <div>{item.price}</div>
-                        </TableCell>
-                        <TableCell>
-                          <List>
-                            {item.smallAvailable && <ListItem>Small</ListItem>}
-                            {item.mediumAvailable && (
-                              <ListItem>Medium</ListItem>
-                            )}
-                            {item.largeAvailable && <ListItem>Large</ListItem>}
-                          </List>
-                        </TableCell>
-                      </TableRow>
-                    ))} */}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-          </Grid>
+    <div>
+      <Grid container spacing={0}>
+        <Grid item xs={2}>
+          <TechnicalSupportRequestsDrawer />
         </Grid>
-      </div>
-    </>
+        <Grid item xs={10}>
+          <h1>List of Resolved Requests</h1>
+          <div style={{ height: 400, width: "100%" }}>
+            <DataGrid
+              getRowId={(row) => row.requestId}
+              rows={resolvedRequests}
+              columns={columns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+            />
+          </div>
+          <br></br>
+          <Divider>
+            <Chip label="End" />
+          </Divider>
+
+          <br></br>
+        </Grid>
+      </Grid>
+      <ViewRequestDetailsDialog
+        open={open}
+        onClose={handleClose}
+        currReq={currReq}
+      ></ViewRequestDetailsDialog>
+    </div>
   );
 }

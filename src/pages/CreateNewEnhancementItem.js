@@ -216,7 +216,6 @@ export default function CreateNewEnhancementItem() {
                             >
                                 <MenuItem value={0}>Building</MenuItem>
                                 <MenuItem value={1}>Plant</MenuItem>
-                                <MenuItem value={2}>Others</MenuItem>
                             </Select>
                             <br />
 

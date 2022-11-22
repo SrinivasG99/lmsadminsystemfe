@@ -32,6 +32,7 @@ import ApprovedReels from "./pages/ApprovedReels";
 import RejectedReels from "./pages/RejectedReels";
 import ListOfEnhancement from './pages/ListOfEnhancementItem';
 import CreateNewEnhancementItem from './pages/CreateNewEnhancementItem';
+import ViewReel from "./components/ViewReel";
 
 function App() {
   return (
@@ -278,6 +279,16 @@ function App() {
                 <RequireAuth>
                   <Appbar />
                   <RejectedReels />
+                </RequireAuth>
+              }
+            />
+
+<Route
+              path="/viewReel"
+              element={
+                <RequireAuth>
+                  <Appbar />
+                  <ViewReel />
                 </RequireAuth>
               }
             />

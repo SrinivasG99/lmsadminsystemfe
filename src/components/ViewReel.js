@@ -1,61 +1,55 @@
 import {
   Breadcrumbs,
+  Grid,
+  IconButton,
+  Link,
   Button,
   Divider,
-  Grid,
-  Link,
   Paper,
   TextField,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { useLocation, useNavigate } from "react-router-dom";
 import LinkMaterial from "@mui/material/Link";
 import { Box } from "@mui/system";
+import { useAuth } from "../context/AuthProvider";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
 export default function ViewReel(props) {
-  const paperStyle = {
-    padding: "10px 10px",
-    width: 800,
-    margin: "20px auto",
-  };
-  const [reelId, setReelId] = useState("");
-  const [reelTitle, setReelTitle] = useState("");
-  const [reelNumLikes, setReelNumLikes] = useState(0);
-  const [reelNumViews, setReelNumViews] = useState(0);
-  const [reelCaption, setReelCaption] = useState("");
-  const [video, setVideo] = useState();
-  const [videoUrl, setVideoUrl] = useState();
-  const [creatorName, setCreatorName] = useState();
+  const auth = useAuth();
+  const user = auth.user;
+  const learnerId = user.userId;
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [currentReel, setCurrentReel] = useState();
+  const [liked, setLiked] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
   const [status, setStatus] = useState();
-  const [rejectionReason, setRejectionReason] = useState(" ");
 
-  React.useEffect(() => {
-    console.log("view reel, received: ", props.reel);
-    setReelId(props.reel.reelId);
-    setReelTitle(props.reel.reelTitle);
-    setReelCaption(props.reel.reelCaption);
-    setReelNumLikes(props.reel.numLikes);
-    setReelNumViews(props.reel.numViews);
-    setVideo(props.reel.video);
-    setCreatorName(props.reel.creatorName);
-    setStatus(props.reel.reelApprovalStatusEnum);
-    setVideoUrl(props.reel.video.fileURL);
-    console.log("fileUrl: ", props.reel.video.fileURL);
+  useEffect(() => {
+    fetch("http://localhost:8080/reel/getReel/" + location.state.reelId)
+      .then((res) => res.json())
+      .then((result) => {
+        setCurrentReel(result);
+        setStatus(result.reelApprovalStatusEnum);
+        console.log("learnerViewReelComponent fetched: ", result);
+      });
   }, []);
-  const renderVideoImageHolder = () => {
+
+  const renderVideoImageHolder2 = () => {
+    console.log("rendervideo2");
     return (
       <>
-        {video ? (
+        {currentReel && currentReel.video ? (
           <div style={{ height: "500px" }}>
-            <ReactPlayer
+            <video
               className="video"
               width="100%"
               height="100%"
               controls
-              url={videoUrl}
+              src={currentReel.video.fileURL}
             />
           </div>
         ) : (
@@ -67,33 +61,62 @@ export default function ViewReel(props) {
     );
   };
 
+  const renderThumbnailHolder = () => {
+    if (currentReel && currentReel.thumbnail) {
+      return (
+        <div style={{ height: "500px" }}>
+          <img
+            src={currentReel.thumbnail.fileURL}
+            alt="Interactive Page Image"
+            width="100%"
+            height="100%"
+            objectFit="contain"
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div style={{ textAlign: "center", padding: "30px" }}>
+          <div>There is no current Thumbnail!</div>
+        </div>
+      );
+    }
+  };
+
   function handleRejectReel() {
+    console.log("clicked handleReject");
     console.log("rejectionReason: ", rejectionReason);
-    fetch("http://localhost:8080/reel/rejectReel/" + reelId, {
+    fetch("http://localhost:8080/reel/rejectReel/" + currentReel.reelId, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: rejectionReason,
     }).then(() => {
       console.log("Reel Rejected Successfully!");
-      props.refreshFunc();
-      props.closeModalFunc();
+      //call back func
+      handleBack();
     });
   }
 
   function handleApproveReel() {
-    fetch("http://localhost:8080/reel/approveReel/" + reelId, {
+    console.log("clicked handleApprove");
+    fetch("http://localhost:8080/reel/approveReel/" + currentReel.reelId, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
     }).then(() => {
       console.log("Reel Approved Successfully!");
-      props.refreshFunc();
-      props.closeModalFunc();
+      handleBack();
+      //call back func
     });
   }
 
+  function handleBack() {
+    console.log("clicked handleBack");
+    navigate(`/pendingReelApprovals`);
+  }
+
   return (
-    <div>
-      <Paper elevation={3} style={paperStyle}>
+    <>
+      {currentReel && (
         <Grid
           container
           className="cards"
@@ -104,123 +127,202 @@ export default function ViewReel(props) {
             alignItems: "center",
           }}
         >
-          <Button
-            variant="contained"
-            color="inherit"
-            onClick={() => props.closeModalFunc()}
-            style={{ marginLeft: "-610px", marginBottom: "10px" }}
-          >
-            Back
-          </Button>
-          <h1
+          <div
             style={{
               backgroundImage: "linear-gradient(to right, #FF8300, #A3C4BC)",
               color: "white",
               padding: "5px",
-              width: "95%",
+              width: "100%",
               borderRadius: "10px",
+              marginLeft: "",
               marginBottom: "10px",
+              display: "flex",
+              justifyContent: "space-between",
             }}
           >
-            View Reel
-          </h1>{" "}
-          <Grid
-            container
-            style={{
-              direction: "flex",
-              flexDirection: "column",
-              justifyItems: "center",
-              alignItems: "center",
-            }}
-          >
-            <Paper
-              elevation={3}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleBack()}
               style={{
-                justifySelf: "center",
-                width: "700px",
-                height: "1000px",
+                marginLeft: "0px",
+                marginBottom: "10px",
+                justifySelf: "flex-start",
               }}
             >
-              {renderVideoImageHolder()}
-              <div
+              Back
+            </Button>
+            {status == "PENDING" &&
+              <h1 style={{ marginRight: "1000px" }}>Pending Reel Approval</h1>
+            }
+                     {status == "LIVE" &&
+              <h1 style={{ marginRight: "1000px" }}>Approved Reel</h1>
+            }
+                     {status == "REJECTED" &&
+              <h1 style={{ marginRight: "1000px" }}>Rejected Reel</h1>
+            }
+          </div>
+          <Box sx={{ width: "100%" }}>
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <Grid
+                container
                 style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
+                  direction: "flex",
+                  flexDirection: "column",
+                  justifyItems: "center",
+                  alignItems: "center",
                 }}
               >
-                <p
+                <Paper
+                  elevation={3}
                   style={{
-                    fontSize: "20px",
-                    paddingBottom: "5px",
-                    paddingTop: "5px",
-                    marginLeft: "20px",
-                    marginTop: "20px",
+                    justifySelf: "center",
+                    width: "1000px",
+                    height: "1000px",
                   }}
-                  className="cards-item-text"
                 >
-                  <FavoriteIcon style={{ color: "red" }} /> {reelNumLikes} likes
-                </p>
-                <p
-                  style={{
-                    fontSize: "20px",
-                    paddingBottom: "5px",
-                    paddingTop: "5px",
-                    marginRight: "20px",
-                    marginTop: "20px",
-                  }}
-                  className="cards-item-text"
-                >
-                  <VisibilityIcon /> {reelNumViews} views
-                </p>
-              </div>
-
-              <Divider style={{ marginTop: "20px" }}></Divider>
-              <Grid style={{ padding: "20px" }}>
-                <p>
-                  <b style={{ color: "#296d98" }}>{creatorName} </b>
-                  <u>{reelTitle}</u>
-                </p>
-                <br></br>
-                <p>{reelCaption}</p>
-                <Divider style={{ marginTop: "30px" }}></Divider>
-              </Grid>
-              <Grid container justifyContent={"space-between"} padding={"20px"}>
-                {status != "REJECTED" && (
-                  <>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={handleRejectReel}
+                  <h1
+                    style={{
+                      backgroundImage:
+                        "linear-gradient(to right, #FF8300, #A3C4BC)",
+                      color: "white",
+                      padding: "5px",
+                      width: "100%",
+                      borderRadius: "10px",
+                      marginLeft: "",
+                      marginBottom: "10px",
+                      alignSelf: "start",
+                    }}
+                  >
+                    Reel
+                  </h1>
+                  {renderVideoImageHolder2()}
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <p
+                      style={{
+                        fontSize: "20px",
+                        paddingBottom: "5px",
+                        paddingTop: "5px",
+                        marginLeft: "20px",
+                        marginTop: "20px",
+                      }}
+                      className="cards-item-text"
                     >
-                      reject
-                    </Button>
-                  </>
-                )}
-                {status != "LIVE" && (
+                      <FavoriteIcon style={{ color: "red" }} />
+                      &nbsp;{currentReel.numLikes} likes
+                    </p>
+                    <p
+                      style={{
+                        fontSize: "20px",
+                        paddingBottom: "5px",
+                        paddingTop: "5px",
+                        marginRight: "20px",
+                        marginTop: "20px",
+                      }}
+                      className="cards-item-text"
+                    >
+                      <VisibilityIcon></VisibilityIcon>&nbsp;
+                      {currentReel.numViews} views
+                    </p>
+                  </div>
+
+                  <Divider style={{ marginTop: "20px" }}></Divider>
+                  <Grid style={{ padding: "20px" }}>
+                    <p>
+                      <b style={{ color: "#296d98" }}>
+                        {currentReel.creatorName}
+                      </b>
+                    </p>
+                    &nbsp;<u>{currentReel.reelTitle}</u>
+                    <br></br>
+                    <p>{currentReel.reelCaption}</p>
+                  </Grid>
+                </Paper>
+              </Grid>
+              <Grid
+                container
+                style={{
+                  direction: "flex",
+                  flexDirection: "column",
+                  justifyItems: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Paper
+                  elevation={3}
+                  style={{
+                    justifySelf: "center",
+                    width: "1000px",
+                    height: "1000px",
+                  }}
+                >
+                  {renderThumbnailHolder()}
+                  <h1
+                    style={{
+                      backgroundImage:
+                        "linear-gradient(to right, #FF8300, #A3C4BC)",
+                      color: "white",
+                      padding: "5px",
+                      width: "100%",
+                      borderRadius: "10px",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    Thumbnail
+                  </h1>
+                </Paper>
+              </Grid>
+            </div>
+            <TextField
+              style={{ marginLeft: "75px", width: "400px", marginTop: "20px" }}
+              multiline
+              type="text"
+              placeholder="Type rejection reason here... (if applicable)"
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+            ></TextField>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: "43%",
+                marginTop: "20px",
+                marginLeft: "75px",
+              }}
+            >
+              {status != "REJECTED" && (
+                <>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleRejectReel}
+                  >
+                    reject
+                  </Button>
+                </>
+              )}
+              {status != "LIVE" && (
+                <>
                   <Button
                     variant="contained"
                     color="primary"
                     onClick={handleApproveReel}
                   >
-                    approve
+                    Approve
                   </Button>
-                )}
-              </Grid>
-              <TextField
-                style={{ marginLeft: "20px", width: "400px" }}
-                multiline
-                type="text"
-                placeholder="Type rejection reason here... (if applicable)"
-                value={rejectionReason}
-                onChange={(e) =>
-                  setRejectionReason(e.target.value)
-                }
-              ></TextField>
-            </Paper>
-          </Grid>
+                </>
+              )}
+            </div>
+          </Box>
         </Grid>
-      </Paper>
-    </div>
+      )}
+    </>
   );
 }

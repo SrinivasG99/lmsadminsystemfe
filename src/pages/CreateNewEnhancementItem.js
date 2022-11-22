@@ -33,24 +33,18 @@ const theme = createTheme({
     },
 });
 
-export default function CreateNewReward() {
+export default function CreateNewEnhancementItem() {
     const navigate = useNavigate();
 
-    const [itemPrice, setItemPrice] = useState(0);
-
-    const [mediumAvailable, setMediumAvailable] = useState(false);
-    const [largeAvailable, setLargeAvailable] = useState(false);
-    const [itemName, setItemName] = useState("");
-    const [itemDescription, setItemDescription] = useState("");
+    // all the fields
+    const [pricePerUse, setPricePerUse] = useState(0);
     const [imageUrl, setImageUrl] = useState("");
-
-    // enhancement
-
-    const [mediumPointThreshold, setMediumPointThreshold] = useState(0);
-    const [largePointThreshold, setLargePointThreshold] = useState(0);
-
+    const [enhancementItemName, setEnhancementItemName] = useState("");
+    const [enhancementItemDescription, setEnhancementItemDescription] = useState("");
+    const [itemPointIncrement, setItemPointIncrement] = useState(0);
     const [itemType, setItemType] = useState("");
 
+    // file uploading
     // image upload
     const [currentFile, setCurrentFile] = useState(undefined);
     const [previewImage, setPreviewImage] = useState(
@@ -58,21 +52,6 @@ export default function CreateNewReward() {
     );
     const [progress, setProgress] = useState(0);
 
-
-    // handle change
-
-    function handleMediumChange() {
-        setMediumAvailable(!mediumAvailable);
-    }
-
-    function handleLargeChange() {
-        setLargeAvailable(!largeAvailable);
-    }
-
-    //notification message
-    const [notifMessage, setNotifMessage] = useState("");
-
-    // selecting file
     const selectFile = (event) => {
         setCurrentFile(event.target.files[0]);
         setPreviewImage(URL.createObjectURL(event.target.files[0]));
@@ -103,13 +82,11 @@ export default function CreateNewReward() {
 
     };
 
-
-
     const handleSubmitItem = () => {
         var error = false;
 
-        if (itemPrice === 0) {
-            toast.warn("Item price must be more than 0!");
+        if (pricePerUse === 0) {
+            toast.warn("Price per use must be more than 0!");
             error = true;
         }
         if (imageUrl == "") {
@@ -117,13 +94,13 @@ export default function CreateNewReward() {
             error = true;
         }
 
-        if (itemName === "") {
-            toast.warn("Item name has to be filled!");
+        if (enhancementItemName === "") {
+            toast.warn("Enhancement item name has to be filled!");
             error = true;
         }
 
-        if (itemDescription === "") {
-            toast.warn("Item description has to be filled!");
+        if (enhancementItemDescription === "") {
+            toast.warn("Enhancement item description has to be filled!");
             error = true;
         }
 
@@ -132,42 +109,34 @@ export default function CreateNewReward() {
             error = true;
         }
 
-        if(largeAvailable) {
-            if (largePointThreshold <= mediumPointThreshold) {
-                toast.warn("Large threshold must be greater than medium threshold!");
-                error = true;
-            }
-
+        if (itemPointIncrement === 0) {
+            toast.warn("Item point increment has to be more than 0");
+            error = true;
         }
 
-        
+
 
         if (error) {
             return;
         }
 
         const newItem = {
-            price: itemPrice,
+            pricePerUse: pricePerUse,
             imageUrl: imageUrl,
-            itemTypeEnum: itemType,
-            mediumAvailable: mediumAvailable,
-            mediumPointThreshold: mediumPointThreshold,
-            largeAvailable: largeAvailable,
-            largePointThreshold: largePointThreshold,
-            itemName: itemName,
-            itemDescription: itemDescription
+            enhancementItemName: enhancementItemName,
+            enhancementItemDescription: enhancementItemDescription,
+            itemPointIncrement: itemPointIncrement,
+            itemType: itemType
         };
         console.log(JSON.stringify(newItem));
-        fetch("http://localhost:8080/treePoints/createNewItem", {
+        fetch("http://localhost:8080/treePoints/createNewEnhancementItem", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newItem)
         }).then(() => {
-            toast.success("Item has been successfully created!");
+            toast.success("Enhancement item has been successfully created!");
 
-            navigate('/rewardsPage');
-
-
+            navigate('/listOfEnhancementItems');
 
         }).catch((err) => {
             toast.error(JSON.stringify(err.message));
@@ -177,49 +146,61 @@ export default function CreateNewReward() {
 
 
 
-
     return (
         <>
             <ToastContainer />
             <div>
                 <Grid container>
                     <Grid item xs={1}>
+                        <ToastContainer />
                         <RewardsDrawer></RewardsDrawer>
                     </Grid>
                     <Grid item xs={10}>
                         <Typography variant="h4" style={{ paddingLeft: '6rem' }}>
-                            Create New Reward Item
+                            Create New Enhancement Item
                         </Typography>
                         <br />
                         <div style={{ paddingLeft: "8em" }}>
                             <TextField
-                                label="Item name"
+                                label="Enhancement item name"
                                 variant="outlined"
                                 fullWidth
                                 style={{ paddingBottom: "10px" }}
-                                value={itemName}
-                                onChange={(e) => setItemName(e.target.value)}
+                                value={enhancementItemName}
+                                onChange={(e) => setEnhancementItemName(e.target.value)}
 
                             />
 
                             <TextField
-                                label="Item Description"
+                                label="Enhancement item description"
                                 variant="outlined"
                                 fullWidth
                                 style={{ paddingBottom: "10px" }}
-                                value={itemDescription}
-                                onChange={(e) => setItemDescription(e.target.value)}
+                                value={enhancementItemDescription}
+                                onChange={(e) => setEnhancementItemDescription(e.target.value)}
 
                             />
                             <TextField
-                                label="Base Item Price"
+                                label="Price per use"
                                 variant="outlined"
                                 fullWidth
-                                value={itemPrice}
+                                value={pricePerUse}
                                 style={{ marginBottom: "5px" }}
-                                onChange={(e) => setItemPrice(e.target.value)}
+                                onChange={(e) => setPricePerUse(e.target.value)}
                                 InputProps={{
                                     endAdornment: <InputAdornment position="end">Tree Points</InputAdornment>,
+                                }}
+
+                            />
+                            <TextField
+                                label="Item point increment"
+                                variant="outlined"
+                                fullWidth
+                                value={itemPointIncrement}
+                                style={{ marginBottom: "5px", marginTop: "10px" }}
+                                onChange={(e) => setItemPointIncrement(e.target.value)}
+                                InputProps={{
+                                    endAdornment: <InputAdornment position="end">Item Points</InputAdornment>,
                                 }}
 
                             />
@@ -235,9 +216,9 @@ export default function CreateNewReward() {
                             >
                                 <MenuItem value={0}>Building</MenuItem>
                                 <MenuItem value={1}>Plant</MenuItem>
-                                <MenuItem value={2}>Others</MenuItem>
                             </Select>
                             <br />
+
                             <div id="small-image-upload">
                                 {previewImage && (
                                     <div>
@@ -291,77 +272,16 @@ export default function CreateNewReward() {
                                     Upload
                                 </Button>
 
+
+
                             </div>
-                            {itemType !== 2 &&
-                                <div>
-                                    <br />
-                                    <Typography style={{ color: "grey" }}>Available in medium size</Typography>
-                                    <Switch
-                                        onChange={handleMediumChange}
-                                        inputProps={{ 'aria-label': 'controlled' }}
-                                        name="Available in medium size"
-                                    />
-                                </div>
-                            }
-
-                            {mediumAvailable === true &&
-                                <div id="medium-image-upload">
-                                    <TextField
-                                        label="Minimum point for item upgrade to medium"
-                                        variant="outlined"
-                                        fullWidth
-                                        value={mediumPointThreshold}
-                                        style={{ marginBottom: "5px", marginTop: "5px" }}
-                                        onChange={(e) => setMediumPointThreshold(e.target.value)}
-                                        InputProps={{
-                                            endAdornment: <InputAdornment position="end">Item Points</InputAdornment>,
-                                        }}
-
-                                    />
-
-                                </div>
-                            }
-                            {mediumAvailable &&
-                                <div>
-                                    <br />
-                                    <Typography style={{ color: "grey" }}>Available in large size</Typography>
-                                    <Switch
-                                        onChange={handleLargeChange}
-                                        inputProps={{ 'aria-label': 'controlled' }}
-                                        name="Available in large size"
-                                    />
-                                </div>
-                            }
-
-                            {mediumAvailable === true && largeAvailable === true &&
-                                <div id="large-image-upload">
-                                    <TextField
-                                        label="Minimum point for item upgrade to large"
-                                        variant="outlined"
-                                        fullWidth
-                                        value={largePointThreshold}
-                                        style={{ marginBottom: "5px", marginTop: "5px"  }}
-                                        onChange={(e) => setLargePointThreshold(e.target.value)}
-                                        InputProps={{
-                                            endAdornment: <InputAdornment position="end">Item Points</InputAdornment>,
-                                        }}
-
-                                    />
-
-                                </div>
-
-                            }
-
-
-
-
 
                             <br />
                             <br />
                             <Button variant="contained" onClick={handleSubmitItem} fullWidth>Submit</Button>
 
-
                         </div>
+
 
                     </Grid>
                 </Grid>

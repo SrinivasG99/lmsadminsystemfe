@@ -30,6 +30,8 @@ import ResolvedRequestsList from "./components/ResolvedRequestsList";
 import PendingReelApprovals from "./pages/PendingReelApprovals";
 import ApprovedReels from "./pages/ApprovedReels";
 import RejectedReels from "./pages/RejectedReels";
+import ListOfEnhancement from './pages/ListOfEnhancementItem';
+import CreateNewEnhancementItem from './pages/CreateNewEnhancementItem';
 
 function App() {
   return (
@@ -299,6 +301,21 @@ function App() {
                 </RequireAuth>
               }
             />
+            <Route path="/listOfEnhancementItems" element={
+              <RequireAuth>
+                <Appbar />
+                <ListOfEnhancement />
+              </RequireAuth>} />
+
+              <Route path="/createNewEnhancement" element={
+              <RequireAuth>
+                <Appbar />
+                <CreateNewEnhancementItem/>
+              </RequireAuth>} />
+
+              <Route path="/dummyPath" element={
+                <Test />
+               } />
 
             <Route path="/dummyPath" element={<Test />} />
           </Routes>

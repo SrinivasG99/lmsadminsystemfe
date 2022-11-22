@@ -5,19 +5,29 @@ import CourseDrawer from "../components/CourseDrawer";
 import OrgApprovalSideBar from "../components/OrgApprovalSideBar";
 import ReelsSideBar from "../components/ReelsSideBar";
 import ViewReel from "../components/ViewReel";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function RejectedReels() {
   const [rejectedReels, setRejectedReels] = useState([]);
   const [currReq, setCurrReq] = useState(undefined);
   const [open, setOpen] = React.useState(false);
-  const handleOpen = (event, param) => {
-    setCurrReq(param.row);
-    console.log("handleOpen, param.row: ", param);
-    setOpen(true);
-  };
-  function handleClose(ed) {
-    setOpen(false);
+  const navigate = useNavigate();
+
+  // const handleOpen = (event, param) => {
+  //   setCurrReq(param.row);
+  //   console.log("handleOpen, param.row: ", param);
+  //   setOpen(true);
+  // };
+  // function handleClose(ed) {
+  //   setOpen(false);
+  // }
+
+
+  function handleViewReel(event, params) {
+    console.log("pendidgnreelsapprovel passing in: ", params.row.reelId);
+    navigate(`/viewReel/`, { state: { reelId: params.row.reelId } });
   }
+
   const columns = [
     {
       field: "reelId",
@@ -41,12 +51,12 @@ export default function RejectedReels() {
               size="small"
               tabIndex={params.hasFocus ? 0 : -1}
               onClick={(event) => {
-                handleOpen(event, params);
+                handleViewReel(event, params);
               }}
             >
               View Reel Details
             </Button>
-            <Modal
+            {/* <Modal
               open={open}
               onClose={handleClose}
               aria-labelledby="modal-modal-title"
@@ -58,7 +68,7 @@ export default function RejectedReels() {
                 reel={currReq}
                 // reelId={reelId}
               ></ViewReel>
-            </Modal>
+            </Modal> */}
           </div>
         );
       },

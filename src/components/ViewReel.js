@@ -18,10 +18,9 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 export default function ViewReel(props) {
   const paperStyle = {
     padding: "10px 10px",
-    width: 1200,
+    width: 800,
     margin: "20px auto",
   };
-  const [currentReel, setCurrentReel] = useState();
   const [reelId, setReelId] = useState("");
   const [reelTitle, setReelTitle] = useState("");
   const [reelNumLikes, setReelNumLikes] = useState(0);
@@ -29,51 +28,34 @@ export default function ViewReel(props) {
   const [reelCaption, setReelCaption] = useState("");
   const [video, setVideo] = useState();
   const [videoUrl, setVideoUrl] = useState();
-  const [thumbnail, setThumbnail] = useState();
-  const [thumbnailUrl, setThumbnailUrl] = useState();
   const [creatorName, setCreatorName] = useState();
   const [status, setStatus] = useState();
   const [rejectionReason, setRejectionReason] = useState(" ");
 
-  const navigate = useNavigate();
-  const location = useLocation();
-
   React.useEffect(() => {
-    fetch("http://localhost:8080/reel/getReel/" + location.state.reelId)
-      .then((res) => res.json())
-      .then((result) => {
-        setCurrentReel(result);
-        setReelTitle(result.reelTitle);
-        setReelCaption(result.reelCaption);
-        setReelNumLikes(result.numLikes);
-        setReelNumViews(result.numViews);
-        setVideo(result.video);
-        setCreatorName(result.creatorName);
-        setStatus(result.reelApprovalStatusEnum);
-        setVideoUrl(result.video.fileURL);
-        setThumbnailUrl(result.thumbnail.fileURL);
-        setThumbnail(result.thumbnail);
-        console.log("learnerViewReelComponent fetched: ", result);
-        console.log("lms url: ", result.video.fileURL)
-      })
-      .then(setVideoUrl({ ...videoUrl }));
-    // console.log("view reel, received: ", location.state.reel);
-    // setReelId(location.state.reel.reelId);
+    console.log("view reel, received: ", props.reel);
+    setReelId(props.reel.reelId);
+    setReelTitle(props.reel.reelTitle);
+    setReelCaption(props.reel.reelCaption);
+    setReelNumLikes(props.reel.numLikes);
+    setReelNumViews(props.reel.numViews);
+    setVideo(props.reel.video);
+    setCreatorName(props.reel.creatorName);
+    setStatus(props.reel.reelApprovalStatusEnum);
+    setVideoUrl(props.reel.video.fileURL);
+    console.log("fileUrl: ", props.reel.video.fileURL);
   }, []);
   const renderVideoImageHolder = () => {
-    var link = location.state.reel.video.fileURL;
     return (
       <>
-        {video && videoUrl ? (
+        {video ? (
           <div style={{ height: "500px" }}>
             <video
-              className="video"
+              className="d"
               width="100%"
               height="100%"
               controls
-              // url={currentReel.video.fileURL}
-              src={currentReel.video.fileURL}
-
+              src={videoUrl}
               // url="https://educouchbucket.s3.ap-southeast-1.amazonaws.com/1669018666625_tree%20video.mp4"
             />
           </div>
@@ -86,28 +68,6 @@ export default function ViewReel(props) {
     );
   };
 
-  // const renderThumbnailHolder = () => {
-  //   return (
-  //     <>
-  //       {thumbnail ? (
-  //         <div style={{ height: "500px", flex: "5" }}>
-  //           <img
-  //             src={thumbnailUrl}
-  //             alt="Interactive Page Image"
-  //             width="100%"
-  //             height="100%"
-  //             objectFit="contain"
-  //           />
-  //         </div>
-  //       ) : (
-  //         <div style={{ textAlign: "center" }}>
-  //           <div>There is no current file!</div>
-  //         </div>
-  //       )}
-  //     </>
-  //   );
-  // };
-
   function handleRejectReel() {
     console.log("rejectionReason: ", rejectionReason);
     fetch("http://localhost:8080/reel/rejectReel/" + reelId, {
@@ -117,8 +77,7 @@ export default function ViewReel(props) {
     }).then(() => {
       console.log("Reel Rejected Successfully!");
       props.refreshFunc();
-      // props.closeModalFunc();
-      navigate(`/PendingApprovalReq`);
+      props.closeModalFunc();
     });
   }
 
@@ -129,14 +88,8 @@ export default function ViewReel(props) {
     }).then(() => {
       console.log("Reel Approved Successfully!");
       props.refreshFunc();
-      // props.closeModalFunc();
-      navigate(`/PendingApprovalReq`);
+      props.closeModalFunc();
     });
-  }
-
-  function handleNavigateBack() {
-    console.log("handle navigate back called");
-    navigate(`/PendingApprovalReq`);
   }
 
   return (
@@ -155,8 +108,8 @@ export default function ViewReel(props) {
           <Button
             variant="contained"
             color="inherit"
-            // onClick={() => handleNavigateBack}
-            style={{ marginLeft: "-1000px", marginBottom: "10px" }}
+            onClick={() => props.closeModalFunc()}
+            style={{ marginLeft: "-610px", marginBottom: "10px" }}
           >
             Back
           </Button>
@@ -185,7 +138,7 @@ export default function ViewReel(props) {
               elevation={3}
               style={{
                 justifySelf: "center",
-                width: "1000px",
+                width: "700px",
                 height: "1000px",
               }}
             >
@@ -261,7 +214,9 @@ export default function ViewReel(props) {
                 type="text"
                 placeholder="Type rejection reason here... (if applicable)"
                 value={rejectionReason}
-                onChange={(e) => setRejectionReason(e.target.value)}
+                onChange={(e) =>
+                  setRejectionReason(e.target.value)
+                }
               ></TextField>
             </Paper>
           </Grid>

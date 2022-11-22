@@ -23,7 +23,7 @@ export default function ViewRequestDetailsDialog(props) {
             <br />
             {props.currReq.imageUrl && (
               <b>
-                Submitted Screenshots:
+                Submitted Screenshot:
                 <img
                   src={props.currReq.imageUrl}
                   alt="Request image"
